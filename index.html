@@ -34,14 +34,21 @@
         .navbar {
             background-color: var(--white);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 15px 0;
+            padding: 10px 0;
         }
         
         .navbar-brand {
+            display: flex;
+            align-items: center;
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             color: var(--primary-green) !important;
             font-size: 1.8rem;
+        }
+        
+        .logo-img {
+            height: 50px;
+            margin-right: 15px;
         }
         
         .navbar-brand span {
@@ -295,6 +302,27 @@
             color: var(--accent-green);
             font-weight: 700;
         }
+        
+        .contact-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info i {
+            font-size: 1.2rem;
+            width: 30px;
+            color: var(--accent-green);
+        }
+        
+        .footer-logo {
+            max-width: 180px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-details {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -302,6 +330,8 @@
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEU8w_H9L2saAhkasgsXa74PpTuuqDCLfI6xlOX-x15imG0Zh22m7QH0K6aOY806F5N2btYWn9596nIsYGClysoH_9zUZZn5sU8BuFAQRf-oNSKRK9twSKkfLrFETAZEQ9htTmyi302UVBTp06iKReiN9AHdiiWNo6fRbdf9pycFXwvwKCl88SHr_osLf8/s320/1000071813.png" 
+                     alt="devəliSH One Foundation Logo" class="logo-img">
                 devəli<span>SH</span> One Foundation
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -338,7 +368,7 @@
             <div class="row">
                 <div class="col-lg-6 mb-5 mb-lg-0">
                     <h2 class="section-title">About Our Foundation</h2>
-                    <p class="lead">Founded in 2010, devəliSH One Foundation has been at the forefront of environmental conservation and sustainability efforts across the globe.</p>
+                    <p class="lead">Founded in 7th April 2025 CIN: U88900UP2025NPL220764, devəliSH One Foundation has been at the forefront of environmental conservation and sustainability efforts across the globe.</p>
                     <p>Our team of dedicated environmentalists, scientists, and volunteers work tirelessly to protect endangered ecosystems, promote biodiversity, and implement sustainable solutions to environmental challenges.</p>
                     <p>We believe that every action counts, and through collaborative efforts, we can create a lasting impact on our planet's health and resilience.</p>
                     <a href="#" class="btn btn-primary mt-3">Learn More About Us</a>
@@ -505,7 +535,122 @@
                             <i class="fas fa-map-marker-alt fa-2x text-primary me-4"></i>
                             <div>
                                 <h4>Our Headquarters</h4>
-                                <p>Ramwapur Dakahi, Katra, Shravasti, UP, IN 271845</p>
+                                <p>Ramwapur Dakahi, Katra, Shravati, UP, India 271805</p>
                             </div>
                         </div>
                         
+                        <div class="d-flex mb-4">
+                            <i class="fas fa-phone fa-2x text-primary me-4"></i>
+                            <div>
+                                <h4>Phone</h4>
+                                <p>+91 9721061660</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex">
+                            <i class="fas fa-envelope fa-2x text-primary me-4"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <p>info.devilish@gmail.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="contact-form">
+                        <h3 class="mb-4">Send Us a Message</h3>
+                        <form>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Your Name" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="email" class="form-control" placeholder="Your Email" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Subject">
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" rows="5" placeholder="Your Message" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEU8w_H9L2saAhkasgsXa74PpTuuqDCLfI6xlOX-x15imG0Zh22m7QH0K6aOY806F5N2btYWn9596nIsYGClysoH_9zUZZn5sU8BuFAQRf-oNSKRK9twSKkfLrFETAZEQ9htTmyi302UVBTp06iKReiN9AHdiiWNo6fRbdf9pycFXwvwKCl88SHr_osLf8/s320/1000071813.png" 
+                         alt="devəliSH One Foundation Logo" class="footer-logo">
+                    <p>Dedicated to preserving nature, protecting wildlife, and promoting sustainable living practices for a healthier planet.</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-info">
+                            <i class="fas fa-envelope"></i>
+                            <div>info.devilish@gmail.com</div>
+                        </div>
+                        <div class="contact-info">
+                            <i class="fas fa-phone"></i>
+                            <div>+91 9721061660</div>
+                        </div>
+                    </div>
+                    
+                    <div class="social-icons mt-4">
+                        <a href="https://facebook.com/develishngo" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com/develishngo" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com/develishngo" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://linkedin.com/in/develishngo" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://youtube.com/develishngo" target="_blank"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links p-0">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#mission">Our Mission</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+                    <h5>Our Projects</h5>
+                    <ul class="footer-links p-0">
+                        <li><a href="#">Reforestation Initiatives</a></li>
+                        <li><a href="#">Wildlife Conservation</a></li>
+                        <li><a href="#">Clean Water Access</a></li>
+                        <li><a href="#">Sustainable Agriculture</a></li>
+                        <li><a href="#">Environmental Education</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe to our newsletter to receive updates on our projects and campaigns.</p>
+                    <form>
+                        <div class="input-group mt-3">
+                            <input type="email" class="form-control" placeholder="Your Email">
+                            <button class="btn btn-primary" type="submit">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 devəliSH One Foundation. All Rights Reserved. | Designed with <i class="fas fa-heart text-danger"></i> for our planet</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
