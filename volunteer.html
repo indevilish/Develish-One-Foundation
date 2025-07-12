@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a Volunteer - devəliSH One Foundation</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #2e8b57;
+            --dark-green: #1d6b3a;
+            --light-green: #e1f5e6;
+            --accent-green: #4caf50;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: #333;
+            background-color: #f9fdfa;
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--dark-green);
+        }
+        
+        .navbar {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary-green) !important;
+            font-size: 1.8rem;
+        }
+        
+        .logo-img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        
+        .navbar-brand span {
+            color: var(--accent-green);
+        }
+        
+        .nav-link {
+            font-weight: 600;
+            color: var(--dark-green) !important;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-green) !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-green);
+            border-color: var(--dark-green);
+            transform: translateY(-2px);
+        }
+        
+        .volunteer-hero {
+            background: linear-gradient(rgba(46, 139, 87, 0.85), rgba(46, 139, 87, 0.85)), url('https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 150px 0 100px;
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .volunteer-hero h1 {
+            font-size: 3.5rem;
+            color: var(--white);
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        
+        .volunteer-section {
+            padding: 100px 0;
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 45px;
+            text-align: center;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 3px;
+            background-color: var(--primary-green);
+        }
+        
+        .benefits-container {
+            background-color: var(--light-green);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        
+        .benefit-icon {
+            background-color: var(--primary-green);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .volunteer-form {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 0.25rem rgba(46, 139, 87, 0.25);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-green);
+        }
+        
+        .required:after {
+            content: " *";
+            color: #dc3545;
+        }
+        
+        .footer {
+            background-color: var(--dark-green);
+            color: var(--white);
+            padding: 70px 0 30px;
+        }
+        
+        .footer h5 {
+            color: var(--white);
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .footer h5:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent-green);
+        }
+        
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            color: var(--white);
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--accent-green);
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            margin-top: 50px;
+            text-align: center;
+        }
+        
+        .contact-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info i {
+            font-size: 1.2rem;
+            width: 30px;
+            color: var(--accent-green);
+        }
+        
+        .footer-logo {
+            max-width: 180px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-details {
+            margin-top: 20px;
+        }
+        
+        .success-message {
+            display: none;
+            background: var(--light-green);
+            border-left: 4px solid var(--primary-green);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEU8w_H9L2saAhkasgsXa74PpTuuqDCLfI6xlOX-x15imG0Zh22m7QH0K6aOY806F5N2btYWn9596nIsYGClysoH_9zUZZn5sU8BuFAQRf-oNSKRK9twSKkfLrFETAZEQ9htTmyi302UVBTp06iKReiN9AHdiiWNo6fRbdf9pycFXwvwKCl88SHr_osLf8/s320/1000071813.png" 
+                     alt="devəliSH One Foundation Logo" class="logo-img">
+                devəli<span>SH</span> One Foundation
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#projects">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#volunteer">Volunteer</a></li>
+                    <li class="nav-item"><a class="btn btn-primary" href="#donate">Donate Now</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Volunteer Hero Section -->
+    <section class="volunteer-hero">
+        <div class="container">
+            <h1>Become a Volunteer</h1>
+            <p class="lead fs-4">Join our mission to protect nature and create a sustainable future for our planet</p>
+            <div class="mt-4">
+                <a href="#volunteer-form" class="btn btn-light btn-lg me-3">Apply Now</a>
+                <a href="#benefits" class="btn btn-outline-light btn-lg">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Volunteer Section -->
+    <section class="volunteer-section" id="volunteer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="benefits-container">
+                        <h2 class="section-title">Why Volunteer With Us?</h2>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-hands-helping fa-lg"></i>
+                            </div>
+                            <div>
+                                <h4>Make a Real Impact</h4>
+                                <p>Directly contribute to environmental conservation projects that make a tangible difference.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-users fa-lg"></i>
+                            </div>
+                            <div>
+                                <h4>Join a Community</h4>
+                                <p>Connect with like-minded individuals passionate about environmental protection.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-graduation-cap fa-lg"></i>
+                            </div>
+                            <div>
+                                <h4>Learn New Skills</h4>
+                                <p>Gain valuable experience in conservation, community engagement, and project management.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-globe-asia fa-lg"></i>
+                            </div>
+                            <div>
+                                <h4>Explore Nature</h4>
+                                <p>Work in beautiful natural environments and learn about diverse ecosystems.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <div class="benefit-icon">
+                                <i class="fas fa-certificate fa-lg"></i>
+                            </div>
+                            <div>
+                                <h4>Receive Recognition</h4>
+                                <p>Get volunteer certificates and references for your professional development.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <h3>Current Volunteer Opportunities</h3>
+                        <div class="accordion mt-4" id="opportunitiesAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                        Tree Planting Initiative
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#opportunitiesAccordion">
+                                    <div class="accordion-body">
+                                        <p><strong>Location:</strong> Local community areas</p>
+                                        <p><strong>Time Commitment:</strong> 4-8 hours per week</p>
+                                        <p>Help us plant native tree species and restore local ecosystems. Training provided.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                        Environmental Education
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#opportunitiesAccordion">
+                                    <div class="accordion-body">
+                                        <p><strong>Location:</strong> Schools and community centers</p>
+                                        <p><strong>Time Commitment:</strong> 2-4 hours per week</p>
+                                        <p>Teach children and communities about environmental conservation and sustainable practices.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                        Wildlife Monitoring
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#opportunitiesAccordion">
+                                    <div class="accordion-body">
+                                        <p><strong>Location:</strong> Nature reserves</p>
+                                        <p><strong>Time Commitment:</strong> Weekends (flexible)</p>
+                                        <p>Assist our research team in monitoring wildlife populations and habitats.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="volunteer-form" id="volunteer-form">
+                        <h2 class="section-title">Volunteer Application</h2>
+                        <p class="text-center mb-4">Fill out the form below to join our volunteer team</p>
+                        
+                        <div class="success-message" id="success-message">
+                            <h4><i class="fas fa-check-circle me-2 text-success"></i> Application Submitted Successfully!</h4>
+                            <p class="mb-0">Thank you for your interest in volunteering with us. We'll contact you shortly.</p>
+                        </div>
+                        
+                        <form id="volunteerForm">
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label required">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" name="fullName" required>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label required">Email Address</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Address</label>
+                                <textarea class="form-control" id="address" name="address" rows="2"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="occupation" class="form-label">Occupation</label>
+                                <input type="text" class="form-control" id="occupation" name="occupation">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="skills" class="form-label">Skills & Experience</label>
+                                <textarea class="form-control" id="skills" name="skills" rows="3" placeholder="Please describe any relevant skills or experience"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label required">Areas of Interest</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interest1" name="interests" value="Tree Planting">
+                                    <label class="form-check-label" for="interest1">Tree Planting</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interest2" name="interests" value="Wildlife Conservation">
+                                    <label class="form-check-label" for="interest2">Wildlife Conservation</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interest3" name="interests" value="Environmental Education">
+                                    <label class="form-check-label" for="interest3">Environmental Education</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interest4" name="interests" value="Community Outreach">
+                                    <label class="form-check-label" for="interest4">Community Outreach</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="interest5" name="interests" value="Fundraising">
+                                    <label class="form-check-label" for="interest5">Fundraising</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="availability" class="form-label">Availability</label>
+                                <select class="form-select" id="availability" name="availability">
+                                    <option value="">Select your availability</option>
+                                    <option value="Weekdays">Weekdays</option>
+                                    <option value="Weekends">Weekends</option>
+                                    <option value="Both">Both</option>
+                                    <option value="Seasonal">Seasonal/Variable</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="commitment" class="form-label">Time Commitment</label>
+                                <select class="form-select" id="commitment" name="commitment">
+                                    <option value="">Select your commitment</option>
+                                    <option value="1-5 hours">1-5 hours per week</option>
+                                    <option value="5-10 hours">5-10 hours per week</option>
+                                    <option value="10+ hours">10+ hours per week</option>
+                                    <option value="Occasional">Occasional/Events</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="motivation" class="form-label required">Why do you want to volunteer with us?</label>
+                                <textarea class="form-control" id="motivation" name="motivation" rows="3" required></textarea>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Application
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEU8w_H9L2saAhkasgsXa74PpTuuqDCLfI6xlOX-x15imG0Zh22m7QH0K6aOY806F5N2btYWn9596nIsYGClysoH_9zUZZn5sU8BuFAQRf-oNSKRK9twSKkfLrFETAZEQ9htTmyi302UVBTp06iKReiN9AHdiiWNo6fRbdf9pycFXwvwKCl88SHr_osLf8/s320/1000071813.png" 
+                         alt="devəliSH One Foundation Logo" class="footer-logo">
+                    <p>Dedicated to preserving nature, protecting wildlife, and promoting sustainable living practices for a healthier planet.</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-info">
+                            <i class="fas fa-envelope"></i>
+                            <div>info.devilish@gmail.com</div>
+                        </div>
+                        <div class="contact-info">
+                            <i class="fas fa-phone"></i>
+                            <div>+91 9721061660</div>
+                        </div>
+                    </div>
+                    
+                    <div class="social-icons mt-4">
+                        <a href="https://facebook.com/develishngo" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com/develishngo" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com/develishngo" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://linkedin.com/in/develishngo" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://youtube.com/develishngo" target="_blank"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links p-0">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#about">About Us</a></li>
+                        <li><a href="index.html#mission">Our Mission</a></li>
+                        <li><a href="index.html#projects">Projects</a></li>
+                        <li><a href="#volunteer">Volunteer</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+                    <h5>Our Projects</h5>
+                    <ul class="footer-links p-0">
+                        <li><a href="#">Reforestation Initiatives</a></li>
+                        <li><a href="#">Wildlife Conservation</a></li>
+                        <li><a href="#">Clean Water Access</a></li>
+                        <li><a href="#">Sustainable Agriculture</a></li>
+                        <li><a href="#">Environmental Education</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe to our newsletter to receive updates on our projects and campaigns.</p>
+                    <form>
+                        <div class="input-group mt-3">
+                            <input type="email" class="form-control" placeholder="Your Email">
+                            <button class="btn btn-primary" type="submit">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 devəliSH One Foundation. All Rights Reserved. | Designed with <i class="fas fa-heart text-danger"></i> for our planet</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Form Submission Script -->
+    <script>
+        document.getElementById('volunteerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Form validation
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const motivation = document.getElementById('motivation').value;
+            
+            if (!fullName || !email || !motivation) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Collect form data
+            const formData = {
+                fullName: fullName,
+                email: email,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                occupation: document.getElementById('occupation').value,
+                skills: document.getElementById('skills').value,
+                interests: getSelectedInterests(),
+                availability: document.getElementById('availability').value,
+                commitment: document.getElementById('commitment').value,
+                motivation: motivation,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Function to get selected interests
+            function getSelectedInterests() {
+                const interests = [];
+                document.querySelectorAll('input[name="interests"]:checked').forEach(checkbox => {
+                    interests.push(checkbox.value);
+                });
+                return interests.join(', ');
+            }
+            
+            // Show loading state
+            const submitBtn = document.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            
+            // In a real implementation, this would POST to your Google Apps Script
+            // For demonstration, we'll simulate a successful submission
+            setTimeout(() => {
+                // Show success message
+                document.getElementById('success-message').style.display = 'block';
+                
+                // Reset form
+                document.getElementById('volunteerForm').reset();
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Application';
+                
+                // Scroll to success message
+                document.getElementById('success-message').scrollIntoView({ behavior: 'smooth' });
+                
+                console.log('Form data to be submitted:', formData);
+                alert('In a real implementation, this data would be saved to Google Sheets. Form data printed to console.');
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
