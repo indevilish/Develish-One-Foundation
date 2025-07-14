@@ -17,4 +17,3 @@ This repository contains the official website for devəliSH One Foundation, an e
 - **Modern UI**: Clean, nature-inspired interface with smooth animations
 - **Razorpay Payment**: Secure donation processing
 - **No Backend Required**: Static site with client-side Google Apps Script integration
-- 
