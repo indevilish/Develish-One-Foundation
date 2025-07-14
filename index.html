@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>devəliSH One Foundation - Environmental Conservation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        :root {
+            --primary-green: #2e8b57;
+            --dark-green: #1d6b3a;
+            --light-green: #e1f5e6;
+            --accent-green: #4caf50;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --text-dark: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--light-gray);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--dark-green);
+        }
+        
+        .container {
+            max-width: 1200px;
+        }
+        
+        /* Header Styles */
+        .navbar {
+            background-color: var(--white);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary-green) !important;
+            font-size: 1.8rem;
+        }
+        
+        .logo-img {
+            height: 50px;
+            margin-right: 15px;
+        }
+        
+        .nav-link {
+            font-weight: 600;
+            color: var(--dark-green) !important;
+            margin: 0 12px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-green);
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover:after,
+        .nav-link.active:after {
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-radius: 30px;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-green);
+            border-color: var(--dark-green);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-green);
+            border-color: var(--primary-green);
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-radius: 30px;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-green);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(rgba(46, 139, 87, 0.85), rgba(46, 139, 87, 0.85)), url('https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 150px 0 100px;
+            color: var(--white);
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-section h1 {
+            font-size: 3.5rem;
+            color: var(--white);
+            margin-bottom: 20px;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .hero-section p {
+            font-size: 1.4rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        /* Section Styles */
+        .section {
+            padding: 100px 0;
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 45px;
+            text-align: center;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 3px;
+            background-color: var(--primary-green);
+        }
+        
+        .bg-light-green {
+            background-color: var(--light-green);
+        }
+        
+        /* Project Cards */
+        .project-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            transition: all 0.3s;
+            background: var(--white);
+            height: 100%;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .project-img {
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .project-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s;
+        }
+        
+        .project-card:hover .project-img img {
+            transform: scale(1.05);
+        }
+        
+        .project-content {
+            padding: 25px;
+        }
+        
+        .project-content h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            background-color: var(--primary-green);
+            color: var(--white);
+            padding: 70px 0;
+            text-align: center;
+        }
+        
+        .stat-box h3 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--white);
+        }
+        
+        .stat-box p {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Forms */
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 0.25rem rgba(46, 139, 87, 0.25);
+        }
+        
+        /* Tabs */
+        .nav-tabs .nav-link {
+            color: var(--dark-green);
+            font-weight: 600;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 12px 25px;
+            margin: 0 5px;
+            border-radius: 0;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary-green);
+            border-bottom: 3px solid var(--primary-green);
+            background: transparent;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--dark-green);
+            color: var(--white);
+            padding: 70px 0 30px;
+        }
+        
+        .footer h5 {
+            color: var(--white);
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .footer h5:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent-green);
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+            list-style: none;
+        }
+        
+        .footer-links a {
+            color: #c8e6c9;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--white);
+            padding-left: 5px;
+        }
+        
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            color: var(--white);
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--accent-green);
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            margin-top: 50px;
+            text-align: center;
+        }
+        
+        /* Utility Classes */
+        .contact-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info i {
+            font-size: 1.2rem;
+            width: 30px;
+            color: var(--accent-green);
+        }
+        
+        .footer-logo {
+            max-width: 180px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-details {
+            margin-top: 20px;
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .donation-option {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .donation-option:hover, 
+        .donation-option.active {
+            border-color: var(--primary-green);
+            background-color: rgba(46, 139, 87, 0.05);
+        }
+        
+        .donation-option.active {
+            border-width: 3px;
+        }
+        
+        .tab-content {
+            padding: 30px 0;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 100px 0 60px;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEU8w_H9L2saAhkasgsXa74PpTuuqDCLfI6xlOX-x15imG0Zh22m7QH0K6aOY806F5N2btYWn9596nIsYGClysoH_9zUZZn5sU8BuFAQRf-oNSKRK9twSKkfLrFETAZEQ9htTmyi302UVBTp06iKReiN9AHdiiWNo6fRbdf9pycFXwvwKCl88SHr_osLf8/s320/1000071813.png" 
+                     alt="devəliSH One Foundation Logo" class="logo-img">
+                devəliSH One Foundation
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#volunteer">Volunteer</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#donationModal">Donate Now</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="container">
+            <h1>Conserving Nature for Future Generations</h1>
+            <p class="lead fs-4">Working towards environmental conservation through sustainable initiatives and community engagement</p>
+            <div class="mt-4">
+                <a href="#projects" class="btn btn-light btn-lg me-3">Our Projects</a>
+                <a href="#volunteer" class="btn btn-outline-light btn-lg">Join as Volunteer</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <h2 class="section-title">About Our Foundation</h2>
+                    <p class="lead">devəliSH One Foundation is a registered environmental NGO dedicated to conservation efforts aligned with UN Sustainable Development Goals (SDGs).</p>
+                    <p>Our mission focuses on protecting biodiversity, restoring ecosystems, and promoting sustainable practices that contribute to global environmental goals.</p>
+                    <p>We implement projects that directly address climate action, life below water, life on land, and sustainable communities.</p>
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-4">
+                            <div class="feature-card">
+                                <i class="fas fa-leaf card-icon"></i>
+                                <h4>Ecosystem Restoration</h4>
+                                <p>Reviving degraded habitats through reforestation and conservation efforts</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="feature-card">
+                                <i class="fas fa-water card-icon"></i>
+                                <h4>Water Conservation</h4>
+                                <p>Protecting aquatic ecosystems and ensuring clean water access</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="p-4">
+                        <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                             alt="Environmental Conservation" class="img-fluid rounded shadow">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="section bg-light-green" id="projects">
+        <div class="container">
+            <h2 class="section-title">Our Environmental Projects</h2>
+            <p class="text-center mb-5">Projects aligned with UN SDGs for environmental conservation</p>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="project-card">
+                        <div class="project-img">
+                            <img src="https://images.unsplash.com/photo-1614294149019-78e8567c97b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Forest Restoration">
+                        </div>
+                        <div class="project-content">
+                            <span class="badge bg-primary mb-2">SDG 15: Life on Land</span>
+                            <h3>Amazon Reforestation</h3>
+                            <p>Restoring 5,000 hectares of rainforest in the Amazon basin through native tree planting and community engagement.</p>
+                            <a href="#" class="btn btn-sm btn-outline-primary mt-2">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="project-card">
+                        <div class="project-img">
+                            <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Coral Reef">
+                        </div>
+                        <div class="project-content">
+                            <span class="badge bg-primary mb-2">SDG 14: Life Below Water</span>
+                            <h3>Coral Reef Restoration</h3>
+                            <p>Reviving damaged coral ecosystems in Southeast Asia through innovative reef restoration techniques.</p>
+                            <a href="#" class="btn btn-sm btn-outline-primary mt-2">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="project-card">
+                        <div class="project-img">
+                            <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Wildlife Protection">
+                        </div>
+                        <div class="project-content">
+                            <span class="badge bg-primary mb-2">SDG 15: Life on Land</span>
+                            <h3>Wildlife Protection</h3>
+                            <p>Establishing protected corridors for endangered species in Africa to ensure their survival and genetic diversity.</p>
+                            <a href="#" class="btn btn-sm btn-outline-primary mt-2">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-primary">View All Projects</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Volunteer Section -->
+    <section class="section" id="volunteer">
+        <div class="container">
+            <h2 class="section-title">Join Our Volunteer Community</h2>
+            <p class="text-center mb-5">Become part of our mission to protect the environment</p>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <ul class="nav nav-tabs justify-content-center" id="volunteerTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab">Sign Up</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">Login</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="volunteerTabContent">
+                        <div class="tab-pane fade show active" id="signup" role="tabpanel">
+                            <div class="form-container">
+                                <form id="volunteerForm">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">First Name</label>
+                                            <input type="text" class="form-control" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Last Name</label>
+                                            <input type="text" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Password</label>
+                                        <input type="password" class="form-control" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Areas of Interest</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="interest1">
+                                            <label class="form-check-label" for="interest1">Tree Planting</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="interest2">
+                                            <label class="form-check-label" for="interest2">Wildlife Conservation</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="interest3">
+                                            <label class="form-check-label" for="interest3">Environmental Education</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Sign Up as Volunteer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="login" role="tabpanel">
+                            <div class="form-container">
+                                <form id="loginForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Password</label>
+                                        <input type="password" class="form-control" required>
+                                    </div>
+                                    
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="remember">
+                                        <label class="form-check-label" for="remember">Remember me</label>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Login</button>
+                                    </div>
+                                    
+                                    <div class="text-center mt-3">
+                                        <a href="#">Forgot Password?</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section bg-light-green" id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <h2 class="section-title">Contact Us</h2>
+                    <p class="lead">Have questions or want to partner with us? Get in touch!</p>
+                    
+                    <div class="mt-5">
+                        <div class="contact-info">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h5>Our Headquarters</h5>
+                                <p>123 Green Avenue, Eco City, EC 12345</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h5>Phone</h5>
+                                <p>+91 9721061660</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h5>Email</h5>
+                                <p>info.devilish@gmail.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <h5>Follow Us</h5>
+                        <div class="social-icons mt-3">
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="form-container">
+                        <h3 class="mb-4">Send a Message</h3>
+                        <form id="contactForm">
+                            <div class="mb-3">
+                                <label class="form-label">Your Name</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Subject</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Message</label>
+                                <textarea class="form-control" rows="5" required></textarea>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Send Message</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEU8w_H9L2saAhkasgsXa74PpTuuqDCLfI6xlOX-x15imG0Zh22m7QH0K6aOY806F5N2btYWn9596nIsYGClysoH_9zUZZn5sU8BuFAQRf-oNSKRK9twSKkfLrFETAZEQ9htTmyi302UVBTp06iKReiN9AHdiiWNo6fRbdf9pycFXwvwKCl88SHr_osLf8/s320/1000071813.png" 
+                         alt="devəliSH One Foundation Logo" class="footer-logo">
+                    <p>Dedicated to preserving nature, protecting wildlife, and promoting sustainable living practices for a healthier planet.</p>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links p-0">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#volunteer">Volunteer</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+                    <h5>Our Projects</h5>
+                    <ul class="footer-links p-0">
+                        <li><a href="#">Reforestation Initiatives</a></li>
+                        <li><a href="#">Wildlife Conservation</a></li>
+                        <li><a href="#">Clean Water Access</a></li>
+                        <li><a href="#">Sustainable Agriculture</a></li>
+                        <li><a href="#">Environmental Education</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe to our newsletter to receive updates on our projects and campaigns.</p>
+                    <form>
+                        <div class="input-group mt-3">
+                            <input type="email" class="form-control" placeholder="Your Email">
+                            <button class="btn btn-primary" type="submit">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 devəliSH One Foundation. All Rights Reserved. | Designed with <i class="fas fa-heart text-danger"></i> for our planet</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Donation Modal -->
+    <div class="modal fade" id="donationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Support Our Mission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center mb-4">Your donation helps us continue our environmental conservation work</p>
+                    
+                    <div class="donation-option active" data-amount="500">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="donationAmount" id="amount1" checked>
+                            <label class="form-check-label fw-bold" for="amount1">
+                                ₹500 - Plant 5 Trees
+                            </label>
+                        </div>
+                        <p class="mt-2 mb-0">Help us plant trees in deforested areas</p>
+                    </div>
+                    
+                    <div class="donation-option" data-amount="1000">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="donationAmount" id="amount2">
+                            <label class="form-check-label fw-bold" for="amount2">
+                                ₹1000 - Clean Water for a Family
+                            </label>
+                        </div>
+                        <p class="mt-2 mb-0">Provide clean water access to a family for a month</p>
+                    </div>
+                    
+                    <div class="donation-option" data-amount="2000">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="donationAmount" id="amount3">
+                            <label class="form-check-label fw-bold" for="amount3">
+                                ₹2000 - Protect Wildlife
+                            </label>
+                        </div>
+                        <p class="mt-2 mb-0">Support our wildlife protection initiatives</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <label class="form-label">Or enter custom amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₹</span>
+                            <input type="number" class="form-control" id="customAmount" placeholder="Enter amount">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary btn-lg w-100" id="donateButton">Donate Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Donation option selection
+        document.querySelectorAll('.donation-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.donation-option').forEach(el => {
+                    el.classList.remove('active');
+                });
+                this.classList.add('active');
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                document.getElementById('customAmount').value = '';
+            });
+        });
+        
+        // Custom amount input
+        document.getElementById('customAmount').addEventListener('input', function() {
+            if (this.value) {
+                document.querySelectorAll('.donation-option').forEach(el => {
+                    el.classList.remove('active');
+                    el.querySelector('input[type="radio"]').checked = false;
+                });
+            }
+        });
+        
+        // Donate button click
+        document.getElementById('donateButton').addEventListener('click', function() {
+            let amount;
+            const customAmount = document.getElementById('customAmount').value;
+            
+            if (customAmount) {
+                amount = parseInt(customAmount) * 100; // Convert to paise
+            } else {
+                const selectedOption = document.querySelector('.donation-option.active');
+                amount = parseInt(selectedOption.dataset.amount) * 100;
+            }
+            
+            if (amount < 100) {
+                alert('Please enter a valid donation amount (minimum ₹100)');
+                return;
+            }
+            
+            // In a real implementation, this would be your Razorpay integration
+            // For demo, we'll simulate a payment popup
+            alert(`In a real implementation, this would open Razorpay payment for ₹${amount/100}`);
+            
+            // Here's how the Razorpay integration would typically look:
+            /*
+            var options = {
+                "key": "YOUR_RAZORPAY_KEY",
+                "amount": amount,
+                "currency": "INR",
+                "name": "devəliSH One Foundation",
+                "description": "Donation for Environmental Conservation",
+                "image": "https://your-ngo-logo.png",
+                "handler": function (response){
+                    alert("Payment successful! Payment ID: " + response.razorpay_payment_id);
+                    // Here you would save the payment details to Google Sheets
+                },
+                "prefill": {
+                    "name": "Donor Name",
+                    "email": "donor@example.com",
+                    "contact": "9999999999"
+                },
+                "theme": {
+                    "color": "#2e8b57"
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+            */
+        });
+        
+        // Form submissions
+        document.getElementById('volunteerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Volunteer form submitted! In a real implementation, this would save to Google Sheets.');
+            // Reset form
+            this.reset();
+        });
+        
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Contact form submitted! In a real implementation, this would save to Google Sheets.');
+            // Reset form
+            this.reset();
+        });
+        
+        // Google Sheets Integration Demo
+        // In a real implementation, you would use Google Apps Script to handle form submissions
+        // Here's a sample function that would save data to Google Sheets:
+        /*
+        function saveToGoogleSheets(formData, sheetName) {
+            // This would be deployed as a web app
+            const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL';
+            
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Form submitted successfully!');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error submitting form. Please try again.');
+            });
+        }
+        */
+    </script>
+</body>
+</html>
