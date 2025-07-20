@@ -1431,7 +1431,7 @@ document.querySelectorAll('form').forEach(form => {
     
     try {
       // Send to Google Apps Script
-      const response = await fetch('YOUR_SCRIPT_URL', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbwFo_PwZjWJtoY18o7KxDir9KutzwMWEFfgk51U8YjBS5BOk98ocKDzkglEn3wX9YI48w/exec', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' }
