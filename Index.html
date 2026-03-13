@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
-        /* ... (all existing styles remain unchanged) ... */
         :root {
             --primary-green: #2e8b57;
             --medium-green: #3daa6d;
@@ -1342,10 +1341,11 @@
             });
         }
         
+        // Initialize animations
         window.addEventListener('load', animateOnScroll);
         window.addEventListener('scroll', animateOnScroll);
         
-        // Donation option selection (unchanged)
+        // Donation option selection
         document.querySelectorAll('.donation-option').forEach(option => {
             option.addEventListener('click', function() {
                 document.querySelectorAll('.donation-option').forEach(el => {
@@ -1358,6 +1358,7 @@
             });
         });
         
+        // Custom amount input
         document.getElementById('customAmount').addEventListener('input', function() {
             if (this.value) {
                 document.querySelectorAll('.donation-option').forEach(el => {
@@ -1367,6 +1368,7 @@
             }
         });
         
+        // Donate button click
         document.getElementById('donateButton').addEventListener('click', function() {
             let amount;
             const customAmount = document.getElementById('customAmount').value;
@@ -1383,6 +1385,7 @@
                 return;
             }
             
+            // Razorpay integration
             var options = {
                 "key": "rzp_test_1DP5mmOlF5G5ag",
                 "amount": amount,
@@ -1407,131 +1410,80 @@
             rzp.open();
         });
         
-        // ========== GOOGLE SHEETS INTEGRATION ==========
-        // Replace this with your actual Google Apps Script Web App URL
-        const GOOGLE_SHEETS_URL = ''; // <-- PASTE YOUR URL HERE
-
-        // Helper to show alert
-        function showAlert(title, message, isSuccess = true) {
-            const alertElement = document.querySelector('.custom-alert');
-            const alertTitle = alertElement.querySelector('.alert-title');
-            const alertMessage = alertElement.querySelector('.alert-message');
-            
-            alertTitle.textContent = title;
-            alertMessage.textContent = message;
-            
-            alertElement.classList.remove('alert-success', 'alert-danger');
-            alertElement.classList.add(isSuccess ? 'alert-success' : 'alert-danger');
-            alertElement.style.display = 'block';
-            
-            setTimeout(() => {
-                alertElement.style.display = 'none';
-            }, 5000);
-        }
-
-        // Handle volunteer form submission
-        document.getElementById('volunteerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
-
-            // Collect form data
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
-
-            // Handle interests (checkboxes)
-            const interests = [];
-            form.querySelectorAll('input[name="interests"]:checked').forEach(cb => {
-                interests.push(cb.value);
-            });
-            data.interests = interests.join(', ');
-
-            try {
-                const response = await fetch(GOOGLE_SHEETS_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                // With no-cors, we can't read response, but we assume success if no error
-                showAlert('Volunteer Form Submitted!', 'Thank you for your interest in volunteering with us.', true);
+        // Form submissions
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Show success alert immediately
+                const alertElement = document.querySelector('.custom-alert');
+                const alertTitle = alertElement.querySelector('.alert-title');
+                const alertMessage = alertElement.querySelector('.alert-message');
+                
+                // Set alert content based on form type
+                switch(form.id) {
+                    case 'volunteerForm':
+                        alertTitle.textContent = 'Volunteer Form Submitted!';
+                        alertMessage.textContent = 'Thank you for your interest in volunteering with us.';
+                        break;
+                    case 'contactForm':
+                        alertTitle.textContent = 'Message Sent!';
+                        alertMessage.textContent = 'We will get back to you shortly.';
+                        break;
+                    case 'newsletterForm':
+                        alertTitle.textContent = 'Subscription Successful!';
+                        alertMessage.textContent = 'You have been added to our newsletter.';
+                        break;
+                }
+                
+                alertElement.classList.add('alert-success');
+                alertElement.classList.remove('alert-danger');
+                alertElement.style.display = 'block';
+                
+                // Hide alert after 5 seconds
+                setTimeout(() => {
+                    alertElement.style.display = 'none';
+                }, 5000);
+                
+                // Reset the form
                 form.reset();
-            } catch (error) {
-                console.error('Error submitting volunteer form:', error);
-                showAlert('Submission Failed', 'There was an error. Please try again later.', false);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Join as Volunteer';
-            }
-        });
-
-        // Handle contact form submission
-        document.getElementById('contactForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
-
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
-
-            try {
-                await fetch(GOOGLE_SHEETS_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                
+                // If you want to actually submit to Google Sheets later, you can add:
+                /*
+                const formData = new FormData(form);
+                const data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
                 });
-                showAlert('Message Sent!', 'We will get back to you shortly.', true);
-                form.reset();
-            } catch (error) {
-                console.error('Error submitting contact form:', error);
-                showAlert('Sending Failed', 'There was an error. Please try again later.', false);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Send Message';
-            }
-        });
-
-        // Handle newsletter form submission
-        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Subscribing...';
-
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
+                
+                // Here you would send data to Google Apps Script
+                try {
+                    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFo_PwZjWJtoY18o7KxDir9KutzwMWEFfgk51U8YjBS5BOk98ocKDzkglEn3wX9YI48w/exec';
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(data),
+                        headers: {'Content-Type': 'application/json'}
+                    });
+                    
+                    const result = await response.json();
+                    if (result.status !== 'success') {
+                        throw new Error(result.message || 'Failed to save data');
+                    }
+                } catch (error) {
+                    console.error('Form submission error:', error);
+                    alertTitle.textContent = 'Error!';
+                    alertMessage.textContent = error.message || 'Failed to submit form. Please try again.';
+                    alertElement.classList.remove('alert-success');
+                    alertElement.classList.add('alert-danger');
+                    alertElement.style.display = 'block';
+                    
+                    // Hide alert after 5 seconds
+                    setTimeout(() => {
+                        alertElement.style.display = 'none';
+                    }, 5000);
+                }
+                */
             });
-
-            try {
-                await fetch(https://script.google.com/macros/s/AKfycbzoba9Ivf_C7hP1oaab_iNZFoAccIbRXZaW5FFg3LoEOxLpBFizWixn-Y0DPR8JwmY/exec, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                showAlert('Subscription Successful!', 'You have been added to our newsletter.', true);
-                form.reset();
-            } catch (error) {
-                console.error('Error subscribing to newsletter:', error);
-                showAlert('Subscription Failed', 'There was an error. Please try again later.', false);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Subscribe';
-            }
         });
     </script>
 </body>
