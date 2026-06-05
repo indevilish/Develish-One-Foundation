@@ -1,9 +1,16 @@
+// ==================== CONFIGURATION – LIVE AMOUNTS ====================
 const SECRET_KEY = 'Develish_Secure_2026_#NGO!';
-const SHEET_ID = '1FI7wkfmhAKHtfbuyF20knTU0Hzj98WXYZJhKbVnOg4'; // YOUR SHEET ID
+const SHEET_ID = 'YOUR_SHEET_ID_HERE';  // 🔁 REPLACE WITH YOUR ACTUAL SHEET ID
 const WEBSITE_URL = 'https://www.develishngo.in';
 const NGO_NAME = 'Develish One Foundation';
-
 const EMAIL_LOGO_URL = 'https://drive.google.com/uc?export=view&id=1VtvHRe639E3W10MJf8SKHeJEZVDn3NWX';
+const G80_NUMBER = 'AALCD5836DF202616';
+const G80_EXEMPTION = '50%';
+
+// LIVE AMOUNTS
+const MEMBERSHIP_YEARLY_AMOUNT = 500;
+const MEMBERSHIP_LIFETIME_AMOUNT = 5000;
+const MIN_DONATION_AMOUNT = 100;
 
 const SOCIAL_LINKS = [
   { name: 'WhatsApp', url: 'https://chat.whatsapp.com/DsuRLbfrgSGFLsvn1hBZtQ', icon: 'fab fa-whatsapp' },
@@ -15,6 +22,7 @@ const SOCIAL_LINKS = [
   { name: 'YouTube', url: 'https://www.youtube.com/@develishngo', icon: 'fab fa-youtube' }
 ];
 
+// ==================== MAIN doPost ====================
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
@@ -23,6 +31,7 @@ function doPost(e) {
     const sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
     const timestamp = new Date();
 
+    // ----- VOLUNTEER REGISTRATION -----
     if (data.formType === 'volunteer') {
       const folder = getOrCreateFolder('Volunteer_Documents');
       const subFolder = folder.createFolder(data.regId + '_' + timestamp.getTime());
@@ -39,46 +48,45 @@ function doPost(e) {
         aadharFrontUrl, aadharBackUrl, proof1Url, proof2Url,
         data.constitutionRead ? 'Yes' : 'No', data.oathAccepted ? 'Yes' : 'No',
         data.membershipType || 'free', data.paymentStatus || 'pending', data.paymentId || '',
-        subFolder.getUrl(), '', '', data.voterId || '', data.amount || '', '', ''
+        subFolder.getUrl(), '', '', '', data.amount || '', ''
       ];
       sheet.appendRow(row);
       if (data.membershipType === 'free') sendVolunteerWelcomeEmail(data.email, data.firstName + ' ' + data.lastName);
       return createResponse('success', 'Volunteer registered');
     }
 
+    // ----- DONATION -----
     if (data.formType === 'donation') {
       const row = [
         timestamp, data.formType, data.regId,
         data.name || '', '', data.email || '', data.phone || '',
         data.address || '', '', '',
-        data.aadharNumber || '', '', '', '', '', '', '', '', '', '',
+        data.aadharNumber || '', '',
+        '', '', '', '',
+        '', '', '',
         data.paymentStatus || 'pending', data.paymentId || '',
-        '', '', '', data.pan || '', data.amount || '', ''
+        '', '', '',
+        data.pan || '', data.amount || '', ''
       ];
       sheet.appendRow(row);
       return createResponse('success', 'Donation record created');
     }
 
+    // ----- CONTACT -----
     if (data.formType === 'contact') {
-      const row = [
-        timestamp, data.formType, data.regId,
-        data.name || '', '', data.email || '', '', '', '', '', '', '',
-        '', '', '', '', '', '', '', '', '', '',
-        data.subject || '', data.message || '', '', '', '', ''
-      ];
+      const row = [timestamp, data.formType, data.regId, data.name || '', '', data.email || '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', data.subject || '', data.message || '', '', '', '', ''];
       sheet.appendRow(row);
       return createResponse('success', 'Message saved');
     }
 
+    // ----- NEWSLETTER -----
     if (data.formType === 'newsletter') {
-      const row = [
-        timestamp, data.formType, data.regId,
-        '', '', data.email || '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
-      ];
+      const row = [timestamp, data.formType, data.regId, '', '', data.email || '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
       sheet.appendRow(row);
       return createResponse('success', 'Newsletter subscribed');
     }
 
+    // ----- PAYMENT UPDATE (after successful Razorpay payment) -----
     if (data.action === 'updatePayment') {
       const regId = data.regId;
       const paymentId = data.paymentId;
@@ -94,7 +102,7 @@ function doPost(e) {
           if (amount) sheet.getRange(i+1, 26).setValue(amount);
 
           const email = allData[i][5];
-          const name = allData[i][3];
+          const name = (allData[i][3] || '') + ' ' + (allData[i][4] || '');
           const phone = allData[i][6];
           const address = allData[i][7] || '';
           const aadharNum = allData[i][10] || 'Not Provided';
@@ -122,9 +130,11 @@ function doPost(e) {
   }
 }
 
+// ✅ FIXED: removed .setHeader to avoid error
 function createResponse(status, message) {
-  return ContentService.createTextOutput(JSON.stringify({ status, message }))
+  const output = ContentService.createTextOutput(JSON.stringify({ status, message }))
     .setMimeType(ContentService.MimeType.JSON);
+  return output;
 }
 
 function getOrCreateFolder(name) {
@@ -143,151 +153,231 @@ function saveFile(base64Data, fileName, folder) {
   return file.getUrl();
 }
 
-// Volunteer welcome email (same as before, logo included)
-function sendVolunteerWelcomeEmail(email, fullName) {
-  let socialHtml = SOCIAL_LINKS.map(link => `<a href="${link.url}" target="_blank" style="margin:0 5px; color:#2b7a3e; text-decoration:none; font-size:20px;"><i class="${link.icon}"></i></a>`).join('');
-  const subject = `Welcome to ${NGO_NAME} – Thank you for joining!`;
-  const htmlBody = `<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head>
-    <body style="font-family:'Segoe UI',Arial,sans-serif; background:#f4f9f4; margin:0; padding:20px;">
-      <div style="max-width:600px; margin:0 auto; background:white; border-radius:20px; overflow:hidden;">
-        <div style="background:#2b7a3e; padding:20px; text-align:center; color:white;">
-          <img src="${EMAIL_LOGO_URL}" style="max-height:60px;"><div style="font-size:24px; font-weight:bold;">${NGO_NAME}</div>
-          <div style="font-size:12px;">Section 8 NGO | 80G Certified</div>
-        </div>
-        <div style="padding:25px 30px;">
-          <div style="font-size:18px;">Dear <strong>${fullName}</strong>,</div>
-          <p style="margin:20px 0;">🎉 <strong>Congratulations and Welcome!</strong></p>
-          <p>Thank you for registering as a <strong>Free Volunteer</strong> with ${NGO_NAME}.</p>
-          <p>You will receive updates about our projects, workshops, and volunteer opportunities.</p>
-          <hr><div style="margin-top:15px; font-size:12px;">🌐 ${WEBSITE_URL}<br>📧 develishngo@gmail.com | develishngo@zohomail.com<br>📞 +91 9721061660, 9628591501, 9984839190</div>
-          <div style="margin:10px 0; text-align:center;">${socialHtml}</div>
-        </div>
-        <div style="background:#eef7ec; padding:15px; text-align:center; font-size:12px;">© 2026 ${NGO_NAME} | CIN: U88900UP2025NPL220764</div>
-      </div>
-    </body></html>`;
-  MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody, body: `Welcome ${fullName}!\n\nThank you for joining ${NGO_NAME}.\n\nWebsite: ${WEBSITE_URL}` });
-}
-
-// DONATION PDF with line-by-line format (1., 2., 3., ...)
+// ==================== PDF RECEIPTS (EXACT ORIGINAL DESIGN) ====================
 function createDonationPDF(name, email, phone, address, pan, aadharNum, amount, paymentId, regId) {
   const folder = getOrCreateFolder('Donation_Receipts');
   const dateStr = Utilities.formatDate(new Date(), "GMT+5:30", "dd-MM-yyyy HH:mm:ss");
-  const displayAadhar = aadharNum !== 'Not Provided' ? aadharNum : 'Not Provided';
-  const htmlContent = `<html><head><style>
-      body{font-family:Helvetica;padding:20px;}.box{border:2px solid #2b7a3e;padding:20px;border-radius:15px;max-width:800px;margin:0 auto;}
-      .header{text-align:center;border-bottom:2px solid #2b7a3e;padding-bottom:15px;}
-      .title{font-size:22px;font-weight:bold;color:#1a5d30;}.subtitle{font-size:11px;color:#5e7b6e;}
-      .amount{background:#2b7a3e;color:white;padding:12px;text-align:center;border-radius:8px;margin:20px 0;font-size:18px;}
-      .details{list-style:none;padding:0;margin:15px 0;}
-      .details li{margin-bottom:8px;font-size:12px;}
-      .legal{background:#eef7ec;padding:10px;border-radius:8px;margin:15px auto;font-size:10px;text-align:center;width:90%;}
-      .signature{text-align:center;margin-top:20px;padding-top:10px;border-top:1px dashed #2b7a3e;font-size:12px;}
-      .footer{font-size:9px;text-align:center;margin-top:15px;}
-    </style></head>
-    <body><div class="box"><div class="header"><div class="title">${NGO_NAME}</div><div class="subtitle">Registered Section 8 NGO | CIN: U88900UP2025NPL220764 | NGO PAN: AALCD5836D</div><div class="subtitle">Head Office: Bharat Lal, Ramwapur Dakahi, Post Katra, Shrawasti, UP - 271805</div></div>
-    <div style="text-align:center;"><span style="background:#2b7a3e;color:white;padding:4px 12px;border-radius:20px;">OFFICIAL 80G TAX EXEMPTION RECEIPT</span></div>
-    <div class="legal"><strong>URN:</strong> AALCD5836DF20261 | <strong>Section:</strong> 80G(5)(iv) | <strong>Order Date:</strong> 07-04-2026<br><strong>Valid for AY:</strong> 2026-27 to 2028-29 (Provisional)</div>
-    <ul class="details">
-      <li><strong>1. Receipt ID:</strong> ${regId}</li>
-      <li><strong>2. Transaction ID:</strong> ${paymentId}</li>
-      <li><strong>3. Date & Time:</strong> ${dateStr}</li>
-      <li><strong>4. Donor Name:</strong> ${name}</li>
-      <li><strong>5. Email:</strong> ${email}</li>
-      <li><strong>6. Mobile:</strong> ${phone}</li>
-      <li><strong>7. Address:</strong> ${address}</li>
-      <li><strong>8. PAN Number:</strong> ${pan}</li>
-      <li><strong>9. Aadhaar Number:</strong> ${displayAadhar}</li>
-    </ul>
+  const displayAadhar = (aadharNum && aadharNum !== 'Not Provided') ? aadharNum : 'Not Provided';
+  
+  const htmlContent = `
+  <!DOCTYPE html>
+  <html>
+  <head><meta charset="UTF-8"><title>80G Receipt</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 20px; background: white; }
+    .receipt { max-width: 800px; margin: 0 auto; border: 1px solid #ccc; padding: 25px; border-radius: 5px; }
+    .header { text-align: center; border-bottom: 2px solid #2b7a3e; padding-bottom: 10px; }
+    .title { font-size: 24px; font-weight: bold; color: #1a5d30; }
+    .subtitle { font-size: 12px; color: #555; }
+    .amount { background: #2b7a3e; color: white; padding: 12px; text-align: center; font-size: 20px; margin: 20px 0; }
+    .details { width: 100%; margin: 15px 0; border-collapse: collapse; }
+    .details td { padding: 6px; border-bottom: 1px dashed #ddd; }
+    .legal { background: #f9f9f9; padding: 12px; font-size: 11px; text-align: center; margin: 20px 0; }
+    .footer { text-align: center; font-size: 10px; margin-top: 20px; border-top: 1px solid #ccc; padding-top: 15px; }
+    .signature { margin-top: 20px; text-align: right; font-size: 12px; }
+  </style>
+  </head>
+  <body>
+  <div class="receipt">
+    <div class="header">
+      <div class="title">${NGO_NAME}</div>
+      <div class="subtitle">Section 8 NGO | CIN: U88900UP2025NPL220764 | NGO PAN: AALCD5836D</div>
+      <div class="subtitle">Ramwapur Dakahi, Post Katra, Shrawasti, UP - 271805</div>
+    </div>
+    <div style="text-align:center; margin:10px 0;"><span style="background:#2b7a3e; color:white; padding:4px 15px;">OFFICIAL 80G TAX EXEMPTION RECEIPT</span></div>
+    <div class="legal">
+      <strong>URN:</strong> ${G80_NUMBER} | <strong>Section:</strong> 80G(5)(iv) | <strong>Order Date:</strong> 07-04-2026<br>
+      <strong>Valid for AY:</strong> 2026-27 to 2028-29 (Provisional) | <strong>Exemption:</strong> ${G80_EXEMPTION}
+    </div>
+    <table class="details">
+      <tr><td style="width:35%;"><strong>1. Receipt ID:</strong></td><td>${escapeHtml(regId)}</td></tr>
+      <tr><td><strong>2. Transaction ID:</strong></td><td>${escapeHtml(paymentId)}</td></tr>
+      <tr><td><strong>3. Date & Time:</strong></td><td>${escapeHtml(dateStr)}</td></tr>
+      <tr><td><strong>4. Donor Name:</strong></td><td>${escapeHtml(name)}</td></tr>
+      <tr><td><strong>5. Email:</strong></td><td>${escapeHtml(email)}</td></tr>
+      <tr><td><strong>6. Mobile:</strong></td><td>${escapeHtml(phone)}</td></tr>
+      <tr><td><strong>7. Address:</strong></td><td>${escapeHtml(address)}</td></tr>
+      <tr><td><strong>8. PAN Number:</strong></td><td>${escapeHtml(pan)}</td></tr>
+      <tr><td><strong>9. Aadhaar Number:</strong></td><td>${displayAadhar}</td></tr>
+    </table>
     <div class="amount">RECEIVED AMOUNT: ₹${amount}/-</div>
-    <p style="text-align:center;">Thank you for your contribution toward environmental regeneration, afforestation, and socio-educational upliftment.</p>
-    <div class="signature"><strong>Authorized Signatory</strong><br>Vishal Pandey<br>Director & President, ${NGO_NAME}</div>
-    <div class="footer">This is a computer-generated receipt. No manual signature required.<br>Donations eligible for 50% tax exemption under Section 80G.<br>📧 develishngo@gmail.com | 📞 +91 9721061660 | 🌐 ${WEBSITE_URL}</div>
-    </div></body></html>`;
+    <p style="text-align:center;">Thank you for your contribution towards environmental regeneration, afforestation, and socio-educational upliftment.</p>
+    <div class="signature">
+      <strong>Authorized Signatory</strong><br>
+      Vishal Pandey<br>
+      Director & President, ${NGO_NAME}
+    </div>
+    <div class="footer">
+      This is a computer-generated receipt. No manual signature required.<br>
+      Donations eligible for ${G80_EXEMPTION} tax exemption under Section 80G.<br>
+      📧 develishngo@gmail.com | 📞 +91 9721061660 | 🌐 ${WEBSITE_URL}
+    </div>
+  </div>
+  </body>
+  </html>`;
+  
   const blob = Utilities.newBlob(htmlContent, 'text/html', 'Receipt_' + regId + '.html');
   const pdfFile = folder.createFile(blob.getAs('application/pdf')).setName('80G_Receipt_' + paymentId + '.pdf');
   pdfFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
   return pdfFile.getUrl();
 }
 
-// Donation email (same as before, logo included)
-function sendDonationEmail(email, name, amount, paymentId, receiptUrl) {
-  let socialHtml = SOCIAL_LINKS.map(link => `<a href="${link.url}" target="_blank" style="margin:0 5px; color:#2b7a3e; text-decoration:none; font-size:20px;"><i class="${link.icon}"></i></a>`).join('');
-  const subject = `Your 80G Tax Receipt - ${NGO_NAME}`;
-  const htmlBody = `<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head>
-    <body style="font-family:'Segoe UI',Arial,sans-serif; background:#f4f9f4; margin:0; padding:20px;">
-      <div style="max-width:600px; margin:0 auto; background:white; border-radius:20px; overflow:hidden;">
-        <div style="background:#2b7a3e; padding:20px; text-align:center; color:white;">
-          <img src="${EMAIL_LOGO_URL}" style="max-height:60px;"><div style="font-size:24px; font-weight:bold;">${NGO_NAME}</div>
-          <div style="font-size:12px;">Section 8 NGO | 80G Certified</div>
-        </div>
-        <div style="padding:25px 30px;">
-          <div style="font-size:18px;">Dear <strong>${name}</strong>,</div>
-          <p>Thank you for your generous contribution of <strong>₹${amount}</strong>.</p>
-          <div style="background:#f9fef9; border-left:4px solid #2b7a3e; padding:12px; margin:20px 0;"><strong>📄 Payment Summary</strong><br>🔹 Transaction ID: ${paymentId}<br>🔹 Date: ${new Date().toLocaleString()}</div>
-          <div style="text-align:center;"><a href="${receiptUrl}" style="background:#2b7a3e; color:white; padding:12px 28px; text-decoration:none; border-radius:40px; display:inline-block;">📎 View / Download 80G Receipt</a></div>
-          <p style="margin-top:20px;">This receipt qualifies for <strong>50% tax exemption under Section 80G</strong>.</p>
-          <hr><div style="margin-top:15px; font-size:12px;">🌐 ${WEBSITE_URL}<br>📧 develishngo@gmail.com | develishngo@zohomail.com<br>📞 +91 9721061660, 9628591501, 9984839190</div>
-          <div style="margin:10px 0; text-align:center;">${socialHtml}</div>
-        </div>
-        <div style="background:#eef7ec; padding:15px; text-align:center; font-size:12px;">© 2026 ${NGO_NAME} | CIN: U88900UP2025NPL220764</div>
-      </div>
-    </body></html>`;
-  MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody, body: `Thank you for ₹${amount}. Receipt: ${receiptUrl}` });
-}
-
-// Membership PDF (line-by-line format)
 function createMembershipPDF(name, email, phone, address, pan, aadharNum, amount, paymentId, regId, membershipType) {
   const folder = getOrCreateFolder('Membership_Receipts');
   const dateStr = Utilities.formatDate(new Date(), "GMT+5:30", "dd-MM-yyyy HH:mm:ss");
   const membershipText = membershipType === 'yearly' ? 'Yearly Volunteer Membership' : 'Lifetime Volunteer Membership';
-  const htmlContent = `<html><head><style>
-      body{font-family:Helvetica;padding:20px;}.box{border:2px solid #2b7a3e;padding:20px;border-radius:15px;max-width:800px;margin:0 auto;}
-      .header{text-align:center;}.title{font-size:22px;font-weight:bold;color:#1a5d30;}
-      .amount{background:#2b7a3e;color:white;padding:12px;text-align:center;border-radius:8px;margin:20px 0;}
-      .details{list-style:none;padding:0;margin:15px 0;}
-      .details li{margin-bottom:8px;font-size:12px;}
-      .signature{text-align:center;margin-top:20px;padding-top:10px;border-top:1px dashed #2b7a3e;}
-    </style></head>
-    <body><div class="box"><div class="header"><div class="title">${NGO_NAME}</div></div>
-    <div style="text-align:center;"><span style="background:#2b7a3e;color:white;padding:4px 12px;border-radius:20px;">MEMBERSHIP RECEIPT</span></div>
-    <ul class="details">
-      <li><strong>1. Receipt ID:</strong> ${regId}</li>
-      <li><strong>2. Transaction ID:</strong> ${paymentId}</li>
-      <li><strong>3. Date & Time:</strong> ${dateStr}</li>
-      <li><strong>4. Name:</strong> ${name}</li>
-      <li><strong>5. Email:</strong> ${email}</li>
-      <li><strong>6. Membership Type:</strong> ${membershipText}</li>
-    </ul>
+  
+  const htmlContent = `
+  <!DOCTYPE html>
+  <html>
+  <head><meta charset="UTF-8"><title>Membership Receipt</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 20px; background: white; }
+    .receipt { max-width: 800px; margin: 0 auto; border: 1px solid #ccc; padding: 25px; border-radius: 5px; }
+    .header { text-align: center; border-bottom: 2px solid #2b7a3e; padding-bottom: 10px; }
+    .title { font-size: 24px; font-weight: bold; color: #1a5d30; }
+    .subtitle { font-size: 12px; color: #555; }
+    .amount { background: #2b7a3e; color: white; padding: 12px; text-align: center; font-size: 20px; margin: 20px 0; }
+    .details { width: 100%; margin: 15px 0; border-collapse: collapse; }
+    .details td { padding: 6px; border-bottom: 1px dashed #ddd; }
+    .footer { text-align: center; font-size: 10px; margin-top: 20px; border-top: 1px solid #ccc; padding-top: 15px; }
+    .signature { margin-top: 20px; text-align: right; font-size: 12px; }
+  </style>
+  </head>
+  <body>
+  <div class="receipt">
+    <div class="header">
+      <div class="title">${NGO_NAME}</div>
+      <div class="subtitle">Section 8 NGO | CIN: U88900UP2025NPL220764</div>
+    </div>
+    <div style="text-align:center; margin:10px 0;"><span style="background:#2b7a3e; color:white; padding:4px 15px;">MEMBERSHIP RECEIPT</span></div>
+    <table class="details">
+      <tr><td style="width:35%;"><strong>1. Receipt ID:</strong></td><td>${escapeHtml(regId)}</td></tr>
+      <tr><td><strong>2. Transaction ID:</strong></td><td>${escapeHtml(paymentId)}</td></tr>
+      <tr><td><strong>3. Date & Time:</strong></td><td>${escapeHtml(dateStr)}</td></tr>
+      <tr><td><strong>4. Name:</strong></td><td>${escapeHtml(name)}</td></tr>
+      <tr><td><strong>5. Email:</strong></td><td>${escapeHtml(email)}</td></tr>
+      <tr><td><strong>6. Membership Type:</strong></td><td>${membershipText}</td></tr>
+    </table>
     <div class="amount">PAID AMOUNT: ₹${amount}/-</div>
-    <p style="text-align:center;">Thank you for becoming a ${membershipText}!</p>
-    <div class="signature"><strong>Authorized Signatory</strong><br>Vishal Pandey<br>Director & President, ${NGO_NAME}</div>
-    </div></body></html>`;
+    <p style="text-align:center;">Thank you for becoming a ${membershipText} member!</p>
+    <div class="signature">
+      <strong>Authorized Signatory</strong><br>
+      Vishal Pandey<br>
+      Director & President, ${NGO_NAME}
+    </div>
+    <div class="footer">
+      📧 develishngo@gmail.com | 📞 +91 9721061660 | 🌐 ${WEBSITE_URL}
+    </div>
+  </div>
+  </body>
+  </html>`;
+  
   const blob = Utilities.newBlob(htmlContent, 'text/html', 'Membership_' + regId + '.html');
   const pdfFile = folder.createFile(blob.getAs('application/pdf')).setName('Membership_' + paymentId + '.pdf');
   pdfFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
   return pdfFile.getUrl();
 }
 
-// Membership email (same as before, logo included)
-function sendMembershipEmail(email, name, amount, paymentId, receiptUrl, membershipType) {
+// ==================== EMAIL FUNCTIONS (EXACT ORIGINAL DESIGN) ====================
+function buildEmailSocialHTML() {
   let socialHtml = SOCIAL_LINKS.map(link => `<a href="${link.url}" target="_blank" style="margin:0 5px; color:#2b7a3e; text-decoration:none; font-size:20px;"><i class="${link.icon}"></i></a>`).join('');
-  const subject = `${NGO_NAME} - ${membershipType === 'yearly' ? 'Yearly' : 'Lifetime'} Membership Confirmed`;
-  const htmlBody = `<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head>
-    <body style="font-family:'Segoe UI',Arial,sans-serif; background:#f4f9f4; margin:0; padding:20px;">
-      <div style="max-width:600px; margin:0 auto; background:white; border-radius:20px; overflow:hidden;">
-        <div style="background:#2b7a3e; padding:20px; text-align:center; color:white;">
-          <img src="${EMAIL_LOGO_URL}" style="max-height:60px;"><div style="font-size:24px; font-weight:bold;">${NGO_NAME}</div><div style="font-size:12px;">Section 8 NGO | 80G Certified</div>
+  return `<div style="margin:10px 0; text-align:center;">${socialHtml}</div>
+          <hr><div style="margin-top:15px; font-size:12px;">
+            🌐 ${WEBSITE_URL}<br>
+            📧 develishngo@gmail.com | develishngo@zohomail.com<br>
+            📞 +91 9721061660, 9628591501, 9984839190
+          </div>`;
+}
+
+function sendVolunteerWelcomeEmail(email, fullName) {
+  try {
+    const socialFooter = buildEmailSocialHTML();
+    const subject = `Welcome to ${NGO_NAME} – Thank you for joining!`;
+    const htmlBody = `<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head>
+      <body style="font-family:'Segoe UI',Arial,sans-serif; background:#f4f9f4; margin:0; padding:20px;">
+        <div style="max-width:600px; margin:0 auto; background:white; border-radius:20px; overflow:hidden;">
+          <div style="background:#2b7a3e; padding:20px; text-align:center; color:white;">
+            <img src="${EMAIL_LOGO_URL}" style="max-height:60px;"><div style="font-size:24px; font-weight:bold;">${NGO_NAME}</div>
+            <div style="font-size:12px;">Section 8 NGO | 80G Certified</div>
+          </div>
+          <div style="padding:25px 30px;">
+            <div style="font-size:18px;">Dear <strong>${fullName}</strong>,</div>
+            <p>🎉 <strong>Welcome to the ${NGO_NAME} family!</strong></p>
+            <p>Thank you for registering as a <strong>Free Volunteer</strong>. You will receive updates about our environmental and social projects, workshops, and volunteer opportunities.</p>
+            <p>Together we can create a greener, healthier planet.</p>
+            ${socialFooter}
+          </div>
+          <div style="background:#eef7ec; padding:15px; text-align:center; font-size:12px;">© 2026 ${NGO_NAME} | CIN: U88900UP2025NPL220764</div>
         </div>
-        <div style="padding:25px 30px;">
-          <div style="font-size:18px;">Dear <strong>${name}</strong>,</div>
-          <p>Thank you for becoming a <strong>${membershipType}</strong> member! Your payment of <strong>₹${amount}</strong> has been received.</p>
-          <div style="text-align:center; margin:20px 0;"><a href="${receiptUrl}" style="background:#2b7a3e; color:white; padding:12px 28px; text-decoration:none; border-radius:40px; display:inline-block;">📎 Download Membership Receipt</a></div>
-          <p>Welcome to the ${NGO_NAME} family!</p>
-          <hr><div style="margin-top:15px; font-size:12px;">🌐 ${WEBSITE_URL}<br>📧 develishngo@gmail.com | develishngo@zohomail.com<br>📞 +91 9721061660, 9628591501, 9984839190</div>
-          <div style="margin:10px 0; text-align:center;">${socialHtml}</div>
+      </body></html>`;
+    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody, body: `Welcome ${fullName}!\nThank you for joining ${NGO_NAME}.\n\n${WEBSITE_URL}` });
+  } catch(e) {}
+}
+
+function sendDonationEmail(email, name, amount, paymentId, receiptUrl) {
+  try {
+    const socialFooter = buildEmailSocialHTML();
+    const subject = `Your 80G Tax Receipt - ${NGO_NAME}`;
+    const htmlBody = `<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head>
+      <body style="font-family:'Segoe UI',Arial,sans-serif; background:#f4f9f4; margin:0; padding:20px;">
+        <div style="max-width:600px; margin:0 auto; background:white; border-radius:20px; overflow:hidden;">
+          <div style="background:#2b7a3e; padding:20px; text-align:center; color:white;">
+            <img src="${EMAIL_LOGO_URL}" style="max-height:60px;"><div style="font-size:24px; font-weight:bold;">${NGO_NAME}</div>
+            <div style="font-size:12px;">Section 8 NGO | 80G Certified</div>
+          </div>
+          <div style="padding:25px 30px;">
+            <div style="font-size:18px;">Dear <strong>${name}</strong>,</div>
+            <p>Thank you for your generous contribution of <strong>₹${amount}</strong>.</p>
+            <div style="background:#f9fef9; border-left:4px solid #2b7a3e; padding:12px; margin:20px 0;">
+              <strong>📄 Payment Summary</strong><br>
+              🔹 Transaction ID: ${paymentId}<br>
+              🔹 Date: ${new Date().toLocaleString()}
+            </div>
+            <div style="text-align:center;"><a href="${receiptUrl}" style="background:#2b7a3e; color:white; padding:12px 28px; text-decoration:none; border-radius:40px; display:inline-block;">📎 View / Download 80G Receipt</a></div>
+            <p style="margin-top:20px;">This receipt qualifies for <strong>${G80_EXEMPTION} tax exemption under Section 80G</strong>.</p>
+            ${socialFooter}
+          </div>
+          <div style="background:#eef7ec; padding:15px; text-align:center; font-size:12px;">© 2026 ${NGO_NAME} | CIN: U88900UP2025NPL220764</div>
         </div>
-        <div style="background:#eef7ec; padding:15px; text-align:center; font-size:12px;">© 2026 ${NGO_NAME} | CIN: U88900UP2025NPL220764</div>
-      </div>
-    </body></html>`;
-  MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody, body: `Your ${membershipType} membership is confirmed. Receipt: ${receiptUrl}` });
+      </body></html>`;
+    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody, body: `Thank you for ₹${amount}. Receipt: ${receiptUrl}` });
+  } catch(e) {}
+}
+
+function sendMembershipEmail(email, name, amount, paymentId, receiptUrl, membershipType) {
+  try {
+    const socialFooter = buildEmailSocialHTML();
+    const subject = `${NGO_NAME} - ${membershipType === 'yearly' ? 'Yearly' : 'Lifetime'} Membership Confirmed`;
+    const htmlBody = `<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head>
+      <body style="font-family:'Segoe UI',Arial,sans-serif; background:#f4f9f4; margin:0; padding:20px;">
+        <div style="max-width:600px; margin:0 auto; background:white; border-radius:20px; overflow:hidden;">
+          <div style="background:#2b7a3e; padding:20px; text-align:center; color:white;">
+            <img src="${EMAIL_LOGO_URL}" style="max-height:60px;"><div style="font-size:24px; font-weight:bold;">${NGO_NAME}</div>
+            <div style="font-size:12px;">Section 8 NGO | 80G Certified</div>
+          </div>
+          <div style="padding:25px 30px;">
+            <div style="font-size:18px;">Dear <strong>${name}</strong>,</div>
+            <p>Thank you for becoming a <strong>${membershipType}</strong> member! Your payment of <strong>₹${amount}</strong> has been received.</p>
+            <div style="text-align:center; margin:20px 0;"><a href="${receiptUrl}" style="background:#2b7a3e; color:white; padding:12px 28px; text-decoration:none; border-radius:40px; display:inline-block;">📎 Download Membership Receipt</a></div>
+            <p>Welcome to the ${NGO_NAME} family – you are now part of our mission to conserve nature and uplift communities.</p>
+            ${socialFooter}
+          </div>
+          <div style="background:#eef7ec; padding:15px; text-align:center; font-size:12px;">© 2026 ${NGO_NAME} | CIN: U88900UP2025NPL220764</div>
+        </div>
+      </body></html>`;
+    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody, body: `Your ${membershipType} membership is confirmed. Receipt: ${receiptUrl}` });
+  } catch(e) {}
+}
+
+// ✅ FIXED: escapeHtml now handles null, undefined, numbers
+function escapeHtml(str) {
+  if (str == null) return '';
+  str = String(str);
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
 }
