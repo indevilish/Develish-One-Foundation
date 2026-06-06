@@ -169,7 +169,7 @@ function createDonationPDF(name, email, phone, address, pan, aadharNum, amount, 
     .header { text-align: center; border-bottom: 2px solid #2b7a3e; padding-bottom: 10px; }
     .title { font-size: 24px; font-weight: bold; color: #1a5d30; }
     .subtitle { font-size: 12px; color: #555; }
-    .amount { background: #2b7a3e; color: white; padding: 12px; text-align: center; font-size: 20px; margin: 20px 0; }
+    .amount { background: #2b7a3e; color: #1a5d30; padding: 12px; text-align: center; font-size: 20px; margin: 20px 0; }
     .details { width: 100%; margin: 15px 0; border-collapse: collapse; }
     .details td { padding: 6px; border-bottom: 1px dashed #ddd; }
     .legal { background: #f9f9f9; padding: 12px; font-size: 11px; text-align: center; margin: 20px 0; }
@@ -184,7 +184,7 @@ function createDonationPDF(name, email, phone, address, pan, aadharNum, amount, 
       <div class="subtitle">Section 8 NGO | CIN: U88900UP2025NPL220764 | NGO PAN: AALCD5836D</div>
       <div class="subtitle">Ramwapur Dakahi, Post Katra, Shrawasti, UP - 271805</div>
     </div>
-    <div style="text-align:center; margin:10px 0;"><span style="background:#2b7a3e; color:white; padding:4px 15px;">OFFICIAL 80G TAX EXEMPTION RECEIPT</span></div>
+    <div style="text-align:center; margin:10px 0;"><span style="background:#2b7a3e; color:#1a5d30; padding:4px 15px;">OFFICIAL 80G TAX EXEMPTION RECEIPT</span></div>
     <div class="legal">
       <strong>URN:</strong> ${G80_NUMBER} | <strong>Section:</strong> 80G(5)(iv) | <strong>Order Date:</strong> 07-04-2026<br>
       <strong>Valid for AY:</strong> 2026-27 to 2028-29 (Provisional) | <strong>Exemption:</strong> ${G80_EXEMPTION}
@@ -237,7 +237,7 @@ function createMembershipPDF(name, email, phone, address, pan, aadharNum, amount
     .header { text-align: center; border-bottom: 2px solid #2b7a3e; padding-bottom: 10px; }
     .title { font-size: 24px; font-weight: bold; color: #1a5d30; }
     .subtitle { font-size: 12px; color: #555; }
-    .amount { background: #2b7a3e; color: white; padding: 12px; text-align: center; font-size: 20px; margin: 20px 0; }
+    .amount { background: #2b7a3e; color: #1a5d30; padding: 12px; text-align: center; font-size: 20px; margin: 20px 0; }
     .details { width: 100%; margin: 15px 0; border-collapse: collapse; }
     .details td { padding: 6px; border-bottom: 1px dashed #ddd; }
     .footer { text-align: center; font-size: 10px; margin-top: 20px; border-top: 1px solid #ccc; padding-top: 15px; }
@@ -250,7 +250,7 @@ function createMembershipPDF(name, email, phone, address, pan, aadharNum, amount
       <div class="title">${NGO_NAME}</div>
       <div class="subtitle">Section 8 NGO | CIN: U88900UP2025NPL220764</div>
     </div>
-    <div style="text-align:center; margin:10px 0;"><span style="background:#2b7a3e; color:white; padding:4px 15px;">MEMBERSHIP RECEIPT</span></div>
+    <div style="text-align:center; margin:10px 0;"><span style="background:#2b7a3e; color:#1a5d30; padding:4px 15px;">MEMBERSHIP RECEIPT</span></div>
     <table class="details">
       <tr><td style="width:35%;"><strong>1. Receipt ID:</strong></td><td>${escapeHtml(regId)}</td></tr>
       <tr><td><strong>2. Transaction ID:</strong></td><td>${escapeHtml(paymentId)}</td></tr>
