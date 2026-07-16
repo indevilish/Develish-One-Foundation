@@ -193,7 +193,7 @@ function doGet(e) {
       for (let i = 1; i < data.length; i++) {
         const row = data[i];
         const rowPaymentId = row[20] || '';
-        const rowAadhar = row[10] || '';
+        const rowAadhar = row[11] || '';
         const rowPan = row[24] || '';
         const rowReceiptUrl = row[26] || '';
         if ((paymentId && rowPaymentId === paymentId) ||
