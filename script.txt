@@ -1,0 +1,490 @@
+// ==================== CONFIGURATION – CHANGE THESE 2 VALUES ====================
+const SECRET_KEY = 'Develish_Secure_2026_#NGO!';
+const SHEET_ID = 'YOUR_SHEET_ID_HERE';  // 🔁 REPLACE WITH YOUR ACTUAL SHEET ID
+// =============================================================================
+
+const WEBSITE_URL = 'https://www.develishngo.in';
+const NGO_NAME = 'Develish One Foundation';
+const EMAIL_LOGO_URL = 'https://drive.google.com/uc?export=view&id=1VtvHRe639E3W10MJf8SKHeJEZVDn3NWX';
+const G80_NUMBER = 'AALCD5836DF202616';
+const G80_EXEMPTION = '50%';
+
+const SOCIAL_LINKS = [
+  { name: 'WhatsApp', url: 'https://chat.whatsapp.com/DsuRLbfrgSGFLsvn1hBZtQ', icon: 'fab fa-whatsapp' },
+  { name: 'Telegram', url: 'https://t.me/develishngo', icon: 'fab fa-telegram' },
+  { name: 'Facebook', url: 'https://www.facebook.com/develishngo', icon: 'fab fa-facebook-f' },
+  { name: 'Twitter', url: 'https://www.x.com/develishngo', icon: 'fab fa-twitter' },
+  { name: 'Instagram', url: 'https://www.instagram.com/develishngo', icon: 'fab fa-instagram' },
+  { name: 'LinkedIn', url: 'https://www.linkedin.com/company/develishngo', icon: 'fab fa-linkedin-in' },
+  { name: 'YouTube', url: 'https://www.youtube.com/@develishngo', icon: 'fab fa-youtube' }
+];
+
+// ==================== MAIN doPost ====================
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    if (data.apiKey !== SECRET_KEY) return createResponse('error', 'Unauthorized');
+
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
+    const timestamp = new Date();
+
+    // ========== VOLUNTEER REGISTRATION ==========
+    if (data.formType === 'volunteer') {
+      const folder = getOrCreateFolder('Volunteer_Documents');
+      const subFolder = folder.createFolder(data.regId + '_' + timestamp.getTime());
+      
+      const aadharFrontUrl = data.aadharFront ? saveFile(data.aadharFront, data.aadharFront_name || 'aadhar_front', subFolder) : '';
+      const aadharBackUrl = data.aadharBack ? saveFile(data.aadharBack, data.aadharBack_name || 'aadhar_back', subFolder) : '';
+      const proof1Url = data.proof1 ? saveFile(data.proof1, data.proof1_name || 'proof1', subFolder) : '';
+      const proof2Url = data.proof2 ? saveFile(data.proof2, data.proof2_name || 'proof2', subFolder) : '';
+      const volPhotoUrl = data.volunteerPhoto ? saveFile(data.volunteerPhoto, data.volunteerPhoto_name || 'volunteer_photo', subFolder) : '';
+      const volunteerId = generateVolunteerId();
+
+      // Column order: 0=A,1=B,2=C,3=D,4=E,5=F,6=G,7=H,8=I,9=J,10=K,11=L,12=M,13=N,14=O,15=P,16=Q,17=R,18=S,19=T,20=U,21=V,22=W,23=X,24=Y,25=Z,26=AA,27=AB,28=AC
+      const row = [
+        timestamp, data.formType, data.regId,
+        data.firstName || '', data.lastName || '', data.email || '', data.phone || '',
+        data.address || '', data.occupation || '', data.education || '',
+        data.aadharNumber || '', data.voterId || '',
+        aadharFrontUrl, aadharBackUrl, proof1Url, proof2Url,
+        data.constitutionRead ? 'Yes' : 'No', data.oathAccepted ? 'Yes' : 'No',
+        data.membershipType || 'free', data.paymentStatus || 'pending', data.paymentId || '',
+        subFolder.getUrl(),
+        '', // subject (W)
+        '', // message (X)
+        '', // pan (Y)
+        '', // amount (Z)
+        '', // receipt (AA)
+        volPhotoUrl, // AB
+        volunteerId // AC
+      ];
+      sheet.appendRow(row);
+
+      // ✅ Email: Free volunteer welcome
+      if (data.membershipType === 'free') {
+        sendVolunteerWelcomeEmail(data.email, data.firstName + ' ' + data.lastName);
+      }
+      return createResponse('success', 'Volunteer registered');
+    }
+
+    // ========== DONATION ==========
+    if (data.formType === 'donation') {
+      const row = [
+        timestamp, data.formType, data.regId,
+        data.name || '', '', data.email || '', data.phone || '',
+        data.address || '', '', '',
+        data.aadharNumber || '', '',
+        '', '', '', '',
+        '', '', '',
+        data.paymentStatus || 'pending', data.paymentId || '',
+        '', // folder
+        '', '', // subject, message
+        data.pan || '', // PAN (Y)
+        data.amount || '', // amount (Z)
+        '', // receipt (AA)
+        '', // photo (AB)
+        ''  // volunteer ID (AC)
+      ];
+      sheet.appendRow(row);
+      return createResponse('success', 'Donation record created');
+    }
+
+    // ========== CONTACT ==========
+    if (data.formType === 'contact') {
+      const row = [
+        timestamp, data.formType, data.regId,
+        data.name || '', '', data.email || '', '', // D, E, F
+        '', '', '', '', // H, I, J
+        '', '', // K, L
+        '', '', '', '', // M, N, O, P
+        '', '', // Q, R
+        '', '', '', // S, T, U
+        '', // V
+        data.subject || '', // W - Subject
+        data.message || '', // X - Message
+        '', '', '', '', '' // Y, Z, AA, AB, AC
+      ];
+      sheet.appendRow(row);
+      return createResponse('success', 'Message saved');
+    }
+
+    // ========== NEWSLETTER ==========
+    if (data.formType === 'newsletter') {
+      const row = [
+        timestamp, data.formType, data.regId,
+        '', '', data.email || '', '', // F - Email
+        '', '', '', '', // H, I, J
+        '', '', // K, L
+        '', '', '', '', // M, N, O, P
+        '', '', // Q, R
+        '', '', '', // S, T, U
+        '', // V
+        '', '', // W, X
+        '', '', '', '', '' // Y, Z, AA, AB, AC
+      ];
+      sheet.appendRow(row);
+      return createResponse('success', 'Newsletter subscribed');
+    }
+
+    // ========== PAYMENT UPDATE (Razorpay Success) ==========
+    if (data.action === 'updatePayment') {
+      const regId = data.regId;
+      const paymentId = data.paymentId;
+      const paymentStatus = data.paymentStatus;
+      const amount = data.amount;
+      const membershipType = data.membershipType;
+      const pan = data.pan || '';
+      const aadharNum = data.aadharNumber || '';
+
+      const allData = sheet.getDataRange().getValues();
+      for (let i = 0; i < allData.length; i++) {
+        if (allData[i][2] === regId) {
+          // Update Payment ID (U), Payment Status (T), Amount (Z)
+          sheet.getRange(i+1, 21).setValue(paymentId);   // U
+          sheet.getRange(i+1, 20).setValue(paymentStatus); // T
+          if (amount) sheet.getRange(i+1, 26).setValue(amount); // Z
+
+          const row = allData[i];
+          const email = row[5];
+          const name = (row[3] || '') + ' ' + (row[4] || '');
+          const phone = row[6];
+          const address = row[7] || '';
+          const aadharNumRow = row[10] || 'Not Provided';
+          const panRow = row[24] || 'Not Provided';
+          const volPhotoUrl = row[27] || '';
+          const volunteerId = row[28] || '';
+
+          let receiptUrl;
+          if (membershipType) {
+            // ✅ Membership: Member Card PDF
+            receiptUrl = createMemberCardPDF(name, email, phone, address, panRow, aadharNumRow, amount, paymentId, regId, membershipType, volunteerId, volPhotoUrl);
+            sheet.getRange(i+1, 27).setValue(receiptUrl); // AA
+            sendMemberCardEmail(email, name, amount, paymentId, receiptUrl, membershipType, volunteerId);
+          } else {
+            // ✅ Donation: Receipt (80G if PAN present)
+            const hasPan = (panRow && panRow !== 'Not Provided' && panRow.length > 0);
+            receiptUrl = createDonationPDF(name, email, phone, address, panRow, aadharNumRow, amount, paymentId, regId, hasPan);
+            sheet.getRange(i+1, 27).setValue(receiptUrl); // AA
+            sendDonationEmail(email, name, amount, paymentId, receiptUrl, hasPan);
+          }
+          break;
+        }
+      }
+      return createResponse('success', 'Payment updated and receipt sent');
+    }
+
+    return createResponse('error', 'Unknown form type');
+  } catch (error) {
+    return createResponse('error', error.toString());
+  }
+}
+
+// ==================== doGet – Receipt Lookup (Mobile Number) ====================
+function doGet(e) {
+  try {
+    const action = e.parameter.action;
+    if (action === 'lookupReceipt') {
+      const paymentId = (e.parameter.paymentId || '').trim();
+      const pan = (e.parameter.pan || '').trim().toUpperCase();
+      const mobile = (e.parameter.mobile || '').trim();  // trim mobile
+
+      const sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
+      const data = sheet.getDataRange().getValues();
+      let found = null;
+
+      for (let i = 1; i < data.length; i++) {
+        const row = data[i];
+        const rowPaymentId = String(row[20] || '').trim();   // U
+        const rowPan = String(row[24] || '').trim().toUpperCase(); // Y
+        const rowMobile = String(row[6] || '').trim();       // G - Mobile Number
+        const rowReceiptUrl = String(row[26] || '').trim();  // AA
+
+        if ((paymentId && rowPaymentId === paymentId) ||
+            (pan && rowPan === pan) ||
+            (mobile && rowMobile === mobile)) {
+          found = {
+            paymentId: rowPaymentId,
+            donorName: (String(row[3] || '') + ' ' + String(row[4] || '')).trim(),
+            receiptUrl: rowReceiptUrl
+          };
+          break;
+        }
+      }
+
+      if (found) {
+        return ContentService.createTextOutput(JSON.stringify({ status: 'success', data: found }))
+          .setMimeType(ContentService.MimeType.JSON);
+      } else {
+        return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Not found' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Invalid action' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ==================== HELPER FUNCTIONS ====================
+function createResponse(status, message) {
+  return ContentService.createTextOutput(JSON.stringify({ status, message }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getOrCreateFolder(name) {
+  const folders = DriveApp.getFoldersByName(name);
+  return folders.hasNext() ? folders.next() : DriveApp.createFolder(name);
+}
+
+function saveFile(base64Data, fileName, folder) {
+  if (!base64Data) return '';
+  const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+  if (!matches) return '';
+  const blob = Utilities.newBlob(Utilities.base64Decode(matches[2]), matches[1], fileName);
+  const file = folder.createFile(blob);
+  return file.getUrl();
+}
+
+function generateVolunteerId() {
+  const now = new Date();
+  const y = String(now.getFullYear()).slice(-2);
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  return 'VOL' + y + m + d + String(Math.floor(100 + Math.random() * 900));
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
+}
+
+function buildEmailSocialHTML() {
+  let socialHtml = SOCIAL_LINKS.map(l => `<a href="${l.url}" target="_blank" style="margin:0 5px; color:#2b7a3e; text-decoration:none; font-size:20px;"><i class="${l.icon}"></i></a>`).join('');
+  return `<div style="margin:10px 0; text-align:center;">${socialHtml}</div>
+          <hr><div style="margin-top:15px; font-size:12px;">
+            🌐 ${WEBSITE_URL}<br>
+            📧 develishngo@gmail.com | develishngo@zohomail.com<br>
+            📞 +91 9721061660, 9628591501, 9984839190
+          </div>`;
+}
+
+// ==================== PDF GENERATORS ====================
+function createDonationPDF(name, email, phone, address, pan, aadharNum, amount, paymentId, regId, is80G) {
+  const folder = getOrCreateFolder('Donation_Receipts');
+  const dateStr = Utilities.formatDate(new Date(), "GMT+5:30", "dd-MM-yyyy HH:mm:ss");
+  const displayAadhar = (aadharNum && aadharNum !== 'Not Provided') ? aadharNum : 'Not Provided';
+  const receiptType = is80G ? '80G TAX EXEMPTION RECEIPT' : 'DONATION RECEIPT';
+  const legalBlock = is80G ? 
+    `<div class="legal">
+      <strong>URN:</strong> ${G80_NUMBER} | <strong>Section:</strong> 80G(5)(iv) | <strong>Order Date:</strong> 07-04-2026<br>
+      <strong>Valid for AY:</strong> 2026-27 to 2028-29 (Provisional) | <strong>Exemption:</strong> ${G80_EXEMPTION}
+    </div>` : '';
+
+  const htmlContent = `<!DOCTYPE html>
+  <html><head><meta charset="UTF-8"><title>${receiptType}</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin:0; padding:20px; background:white; }
+    .receipt { max-width:800px; margin:0 auto; border:1px solid #ccc; padding:25px; border-radius:5px; }
+    .header { text-align:center; border-bottom:2px solid #2b7a3e; padding-bottom:10px; }
+    .title { font-size:24px; font-weight:bold; color:#1a5d30; }
+    .subtitle { font-size:12px; color:#555; }
+    .amount { background:#2b7a3e; color:#1a5d30; padding:12px; text-align:center; font-size:20px; margin:20px 0; }
+    .details { width:100%; margin:15px 0; border-collapse:collapse; }
+    .details td { padding:6px; border-bottom:1px dashed #ddd; }
+    .legal { background:#f9f9f9; padding:12px; font-size:11px; text-align:center; margin:20px 0; }
+    .footer { text-align:center; font-size:10px; margin-top:20px; border-top:1px solid #ccc; padding-top:15px; }
+    .signature { margin-top:20px; text-align:right; font-size:12px; }
+  </style>
+  </head>
+  <body>
+  <div class="receipt">
+    <div class="header">
+      <div class="title">${NGO_NAME}</div>
+      <div class="subtitle">Section 8 NGO | CIN: U88900UP2025NPL220764 | NGO PAN: AALCD5836D</div>
+      <div class="subtitle">Ramwapur Dakahi, Post Katra, Shrawasti, UP - 271805</div>
+    </div>
+    <div style="text-align:center; margin:10px 0;"><span style="background:#2b7a3e; color:#1a5d30; padding:4px 15px;">${receiptType}</span></div>
+    ${legalBlock}
+    <table class="details">
+      <tr><td style="width:35%;"><strong>1. Receipt ID:</strong></td><td>${escapeHtml(regId)}</td></tr>
+      <tr><td><strong>2. Transaction ID:</strong></td><td>${escapeHtml(paymentId)}</td></tr>
+      <tr><td><strong>3. Date & Time:</strong></td><td>${escapeHtml(dateStr)}</td></tr>
+      <tr><td><strong>4. Donor Name:</strong></td><td>${escapeHtml(name)}</td></tr>
+      <tr><td><strong>5. Email:</strong></td><td>${escapeHtml(email)}</td></tr>
+      <tr><td><strong>6. Mobile:</strong></td><td>${escapeHtml(phone)}</td></tr>
+      <tr><td><strong>7. Address:</strong></td><td>${escapeHtml(address)}</td></tr>
+      <tr><td><strong>8. PAN Number:</strong></td><td>${escapeHtml(pan)}</td></tr>
+      <tr><td><strong>9. Aadhaar Number:</strong></td><td>${displayAadhar}</td></tr>
+    </table>
+    <div class="amount">RECEIVED AMOUNT: ₹${amount}/-</div>
+    <p style="text-align:center;">Thank you for your contribution towards environmental regeneration, afforestation, and socio-educational upliftment.</p>
+    <div class="signature">
+      <strong>Authorized Signatory</strong><br>
+      Vimal Kumar Pandey<br>
+      Director & Treasurer, ${NGO_NAME}
+    </div>
+    <div class="footer">
+      This is a computer-generated receipt. No manual signature required.<br>
+      ${is80G ? `Donations eligible for ${G80_EXEMPTION} tax exemption under Section 80G.` : 'This is a normal donation receipt (not 80G).'}
+      <br>📧 develishngo@gmail.com | 📞 +91 9721061660 | 🌐 ${WEBSITE_URL}
+    </div>
+  </div>
+  </body></html>`;
+  
+  const blob = Utilities.newBlob(htmlContent, 'text/html', 'Receipt_' + regId + '.html');
+  const pdfFile = folder.createFile(blob.getAs('application/pdf')).setName('Receipt_' + paymentId + '.pdf');
+  pdfFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  return pdfFile.getUrl();
+}
+
+function createMemberCardPDF(name, email, phone, address, pan, aadharNum, amount, paymentId, regId, membershipType, volunteerId, photoUrl) {
+  const folder = getOrCreateFolder('Member_Cards');
+  const dateStr = Utilities.formatDate(new Date(), "GMT+5:30", "dd-MM-yyyy HH:mm:ss");
+  const membershipText = membershipType === 'yearly' ? 'Yearly Volunteer Membership' : 'Lifetime Volunteer Membership';
+  
+  let validityText;
+  if (membershipType === 'yearly') {
+    const validTill = new Date();
+    validTill.setFullYear(validTill.getFullYear() + 1);
+    validityText = Utilities.formatDate(validTill, "GMT+5:30", "dd-MM-yyyy");
+  } else {
+    validityText = 'Lifetime';
+  }
+
+  let photoHtml = '';
+  if (photoUrl) {
+    try {
+      const photoBlob = UrlFetchApp.fetch(photoUrl).getBlob();
+      const photoBase64 = Utilities.base64Encode(photoBlob.getBytes());
+      photoHtml = `<img src="data:${photoBlob.getContentType()};base64,${photoBase64}" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid #2b7a3e; margin-bottom:10px;">`;
+    } catch (e) {
+      photoHtml = `<div style="width:100px; height:100px; border-radius:50%; background:#ccc; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:40px; color:#888;"><i class="fas fa-user"></i></div>`;
+    }
+  } else {
+    photoHtml = `<div style="width:100px; height:100px; border-radius:50%; background:#ccc; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:40px; color:#888;"><i class="fas fa-user"></i></div>`;
+  }
+
+  const htmlContent = `<!DOCTYPE html>
+  <html><head><meta charset="UTF-8"><title>Member Identity Card</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; margin:0; padding:20px; background:#f4f9f4; }
+    .card { max-width:400px; margin:0 auto; background:white; border-radius:24px; overflow:hidden; box-shadow:0 12px 30px rgba(0,0,0,0.1); border:2px solid #2b7a3e; }
+    .card-header { background:#2b7a3e; color:white; padding:15px 20px; text-align:center; font-weight:700; font-size:18px; }
+    .card-body { padding:25px 20px; text-align:center; }
+    .card-body .member-id { font-size:14px; color:#5e7b6e; margin:8px 0; }
+    .card-body .member-validity { font-size:13px; color:#2b7a3e; font-weight:600; margin:8px 0; }
+    .card-footer { background:#eef7ec; padding:12px; text-align:center; font-size:11px; color:#2b7a3e; }
+    .label { font-weight:600; color:#1a5d30; }
+  </style>
+  </head>
+  <body>
+  <div class="card">
+    <div class="card-header">${NGO_NAME}</div>
+    <div class="card-body">
+      ${photoHtml}
+      <div class="member-name" style="font-weight:700; font-size:20px; color:#1a5d30;">${escapeHtml(name)}</div>
+      <div class="member-id"><span class="label">Volunteer ID:</span> ${escapeHtml(volunteerId)}</div>
+      <div class="member-id"><span class="label">Membership:</span> ${membershipText}</div>
+      <div class="member-validity"><span class="label">Valid Till:</span> ${validityText}</div>
+      <div style="margin-top:12px; font-size:12px; color:#555;">📧 ${escapeHtml(email)} | 📞 ${escapeHtml(phone)}</div>
+    </div>
+    <div class="card-footer">Issued on ${dateStr} | ${WEBSITE_URL}</div>
+  </div>
+  </body></html>`;
+  
+  const blob = Utilities.newBlob(htmlContent, 'text/html', 'MemberCard_' + regId + '.html');
+  const pdfFile = folder.createFile(blob.getAs('application/pdf')).setName('MemberCard_' + volunteerId + '.pdf');
+  pdfFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  return pdfFile.getUrl();
+}
+
+// ==================== EMAIL FUNCTIONS ====================
+function sendVolunteerWelcomeEmail(email, fullName) {
+  try {
+    const socialFooter = buildEmailSocialHTML();
+    const subject = `Welcome to ${NGO_NAME} – Thank you for joining!`;
+    const htmlBody = `<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head>
+    <body style="font-family:'Segoe UI',Arial,sans-serif; background:#f4f9f4; margin:0; padding:20px;">
+      <div style="max-width:600px; margin:0 auto; background:white; border-radius:20px; overflow:hidden;">
+        <div style="background:#2b7a3e; padding:20px; text-align:center; color:white;">
+          <img src="${EMAIL_LOGO_URL}" style="max-height:60px;"><div style="font-size:24px; font-weight:bold;">${NGO_NAME}</div>
+          <div style="font-size:12px;">Section 8 NGO | 80G Certified</div>
+        </div>
+        <div style="padding:25px 30px;">
+          <div style="font-size:18px;">Dear <strong>${fullName}</strong>,</div>
+          <p>🎉 <strong>Welcome to the ${NGO_NAME} family!</strong></p>
+          <p>Thank you for registering as a <strong>Free Volunteer</strong>. You will receive updates about our environmental and social projects, workshops, and volunteer opportunities.</p>
+          <p>Together we can create a greener, healthier planet.</p>
+          ${socialFooter}
+        </div>
+        <div style="background:#eef7ec; padding:15px; text-align:center; font-size:12px;">© 2026 ${NGO_NAME} | CIN: U88900UP2025NPL220764</div>
+      </div>
+    </body></html>`;
+    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody, body: `Welcome ${fullName}!\nThank you for joining ${NGO_NAME}.\n\n${WEBSITE_URL}` });
+  } catch(e) { console.error('Email error:', e); }
+}
+
+function sendDonationEmail(email, name, amount, paymentId, receiptUrl, is80G) {
+  try {
+    const socialFooter = buildEmailSocialHTML();
+    const receiptType = is80G ? '80G Tax Receipt' : 'Donation Receipt';
+    const subject = `Your ${receiptType} - ${NGO_NAME}`;
+    const htmlBody = `<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head>
+    <body style="font-family:'Segoe UI',Arial,sans-serif; background:#f4f9f4; margin:0; padding:20px;">
+      <div style="max-width:600px; margin:0 auto; background:white; border-radius:20px; overflow:hidden;">
+        <div style="background:#2b7a3e; padding:20px; text-align:center; color:white;">
+          <img src="${EMAIL_LOGO_URL}" style="max-height:60px;"><div style="font-size:24px; font-weight:bold;">${NGO_NAME}</div>
+          <div style="font-size:12px;">Section 8 NGO | 80G Certified</div>
+        </div>
+        <div style="padding:25px 30px;">
+          <div style="font-size:18px;">Dear <strong>${name}</strong>,</div>
+          <p>Thank you for your generous contribution of <strong>₹${amount}</strong>.</p>
+          <div style="background:#f9fef9; border-left:4px solid #2b7a3e; padding:12px; margin:20px 0;">
+            <strong>📄 Payment Summary</strong><br>
+            🔹 Transaction ID: ${paymentId}<br>
+            🔹 Date: ${new Date().toLocaleString()}
+          </div>
+          <div style="text-align:center;"><a href="${receiptUrl}" style="background:#2b7a3e; color:white; padding:12px 28px; text-decoration:none; border-radius:40px; display:inline-block;">📎 View / Download ${receiptType}</a></div>
+          <p style="margin-top:20px;">${is80G ? `This receipt qualifies for <strong>${G80_EXEMPTION} tax exemption under Section 80G</strong>.` : 'This is a normal donation receipt (not 80G).'}</p>
+          ${socialFooter}
+        </div>
+        <div style="background:#eef7ec; padding:15px; text-align:center; font-size:12px;">© 2026 ${NGO_NAME} | CIN: U88900UP2025NPL220764</div>
+      </div>
+    </body></html>`;
+    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody, body: `Thank you for ₹${amount}. Receipt: ${receiptUrl}` });
+  } catch(e) { console.error('Email error:', e); }
+}
+
+function sendMemberCardEmail(email, name, amount, paymentId, cardUrl, membershipType, volunteerId) {
+  try {
+    const socialFooter = buildEmailSocialHTML();
+    const subject = `${NGO_NAME} - ${membershipType === 'yearly' ? 'Yearly' : 'Lifetime'} Membership Confirmed`;
+    const htmlBody = `<!DOCTYPE html><html><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></head>
+    <body style="font-family:'Segoe UI',Arial,sans-serif; background:#f4f9f4; margin:0; padding:20px;">
+      <div style="max-width:600px; margin:0 auto; background:white; border-radius:20px; overflow:hidden;">
+        <div style="background:#2b7a3e; padding:20px; text-align:center; color:white;">
+          <img src="${EMAIL_LOGO_URL}" style="max-height:60px;"><div style="font-size:24px; font-weight:bold;">${NGO_NAME}</div>
+          <div style="font-size:12px;">Section 8 NGO | 80G Certified</div>
+        </div>
+        <div style="padding:25px 30px;">
+          <div style="font-size:18px;">Dear <strong>${name}</strong>,</div>
+          <p>Thank you for becoming a <strong>${membershipType}</strong> member! Your payment of <strong>₹${amount}</strong> has been received.</p>
+          <p><strong>Your Volunteer ID:</strong> ${volunteerId}</p>
+          <div style="text-align:center; margin:20px 0;"><a href="${cardUrl}" style="background:#2b7a3e; color:white; padding:12px 28px; text-decoration:none; border-radius:40px; display:inline-block;">📎 Download Your Member Identity Card</a></div>
+          <p>Welcome to the ${NGO_NAME} family – you are now part of our mission to conserve nature and uplift communities.</p>
+          ${socialFooter}
+        </div>
+        <div style="background:#eef7ec; padding:15px; text-align:center; font-size:12px;">© 2026 ${NGO_NAME} | CIN: U88900UP2025NPL220764</div>
+      </div>
+    </body></html>`;
+    MailApp.sendEmail({ to: email, subject: subject, htmlBody: htmlBody, body: `Your ${membershipType} membership is confirmed. Card: ${cardUrl}` });
+  } catch(e) { console.error('Email error:', e); }
+}
