@@ -185,31 +185,39 @@ function doGet(e) {
     const action = e.parameter.action;
     if (action === 'lookupReceipt') {
       const paymentId = e.parameter.paymentId || '';
-      const aadhar = e.parameter.aadhar || '';
       const pan = e.parameter.pan || '';
+      const mobile = e.parameter.mobile || ''; // Changed from aadhar to mobile
+
       const sheet = SpreadsheetApp.openById(SHEET_ID).getActiveSheet();
       const data = sheet.getDataRange().getValues();
       let found = null;
+
       for (let i = 1; i < data.length; i++) {
         const row = data[i];
-        const rowPaymentId = row[20] || '';
-        const rowAadhar = row[11] || '';
-        const rowPan = row[24] || '';
-        const rowReceiptUrl = row[26] || '';
+        const rowPaymentId = row[20] || '';   // U
+        const rowPan = row[24] || '';         // Y
+        const rowMobile = row[6] || '';       // G - Mobile Number
+        const rowReceiptUrl = row[26] || '';  // AA
+
         if ((paymentId && rowPaymentId === paymentId) ||
-            (aadhar && rowAadhar === aadhar) ||
-            (pan && rowPan === pan)) {
-          found = { 
-            paymentId: rowPaymentId, 
-            donorName: (row[3] || '') + ' ' + (row[4] || ''), 
-            receiptUrl: rowReceiptUrl 
+            (pan && rowPan === pan) ||
+            (mobile && rowMobile === mobile)) {
+          found = {
+            paymentId: rowPaymentId,
+            donorName: (row[3] || '') + ' ' + (row[4] || ''),
+            receiptUrl: rowReceiptUrl
           };
           break;
         }
       }
-      const result = found ? { status: 'success', data: found } : { status: 'error', message: 'Not found' };
-      return ContentService.createTextOutput(JSON.stringify(result))
-        .setMimeType(ContentService.MimeType.JSON);
+
+      if (found) {
+        return ContentService.createTextOutput(JSON.stringify({ status: 'success', data: found }))
+          .setMimeType(ContentService.MimeType.JSON);
+      } else {
+        return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Not found' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
     }
     return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: 'Invalid action' }))
       .setMimeType(ContentService.MimeType.JSON);
