@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>devəliSH One Foundation | Volunteers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :root { --primary-green: #2b7a3e; --dark-green: #1a5d30; --light-green: #eafaf1; --light-bg: #f9fef9; --text-dark: #1e2f2c; }
+        body { font-family: 'Inter', sans-serif; color: var(--text-dark); background-color: var(--light-bg); line-height: 1.7; }
+        h1, h2, h3, .navbar-brand { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; }
+        .navbar { background: rgba(255,255,255,0.96); backdrop-filter: blur(4px); box-shadow: 0 5px 20px rgba(0,0,0,0.05); padding: 12px 0; }
+        .navbar-brand { font-weight: 800; font-size: 1.6rem; color: var(--primary-green) !important; }
+        .logo-img { height: 48px; margin-right: 12px; }
+        .nav-link { font-weight: 600; color: var(--text-dark) !important; margin: 0 12px; }
+        .nav-link:hover { color: var(--primary-green) !important; }
+        .btn-back { background-color: var(--primary-green); color: white; border-radius: 40px; padding: 8px 25px; display: inline-block; text-decoration: none; }
+        .btn-back:hover { background-color: var(--dark-green); color: white; }
+        .section { padding: 60px 0; }
+
+        .volunteer-card {
+            background: white;
+            border-radius: 28px;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            text-align: center;
+            border: 1px solid rgba(43,122,62,0.08);
+        }
+        .volunteer-card:hover { transform: translateY(-6px); box-shadow: 0 25px 50px rgba(0,0,0,0.1); }
+        .volunteer-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-green);
+            margin: 0 auto 1rem;
+            display: block;
+            background: #eef7ec;
+        }
+        .volunteer-photo-fallback {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #eef7ec;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid var(--primary-green);
+            font-size: 3rem;
+            color: var(--primary-green);
+        }
+        .volunteer-name { font-size: 1.2rem; font-weight: 700; color: var(--dark-green); margin-bottom: 0.2rem; }
+        .volunteer-id { font-size: 0.85rem; color: #888; margin-bottom: 4px; }
+        .volunteer-email, .volunteer-phone { font-size: 0.9rem; color: #555; margin-bottom: 4px; }
+        .volunteer-email i, .volunteer-phone i { color: var(--primary-green); width: 20px; }
+        .membership-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .membership-badge.free { background: #e8f0e8; color: #5e7b6e; }
+        .membership-badge.yearly { background: #fff3cd; color: #856404; }
+        .membership-badge.lifetime { background: #d4edda; color: #155724; }
+
+        /* Skeleton */
+        .skeleton-card {
+            background: white;
+            border-radius: 28px;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+            height: 100%;
+            text-align: center;
+        }
+        .skeleton-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            background: linear-gradient(90deg, #e8f0e8 25%, #f0f8f0 50%, #e8f0e8 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-line { height: 16px; margin: 8px auto; border-radius: 8px; background: linear-gradient(90deg, #e8f0e8 25%, #f0f8f0 50%, #e8f0e8 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        .skeleton-line.short { width: 60%; }
+        .skeleton-line.medium { width: 80%; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+        .footer { background-color: #0b3b24; color: #d9e6cf; padding: 40px 0 20px; text-align: center; }
+        .footer a { color: #c8e6c9; text-decoration: none; }
+        .footer a:hover { color: white; }
+
+        .search-box { max-width: 400px; margin: 0 auto 2rem; }
+        .search-box input { border-radius: 60px; padding: 10px 20px; border: 2px solid #ddd; width: 100%; }
+        .search-box input:focus { border-color: var(--primary-green); box-shadow: 0 0 0 0.25rem rgba(43,122,62,0.25); }
+
+        @media (max-width: 768px) { .section { padding: 40px 0; } .volunteer-photo { width: 100px; height: 100px; } }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="https://www.develishngo.in">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhEU8w_H9L2saAhkasgsXa74PpTuuqDCLfI6xlOX-x15imG0Zh22m7QH0K6aOY806F5N2btYWn9596nIsYGClysoH_9zUZZn5sU8BuFAQRf-oNSKRK9twSKkfLrFETAZEQ9htTmyi302UVBTp06iKReiN9AHdiiWNo6fRbdf9pycFXwvwKCl88SHr_osLf8/s320/1000071813.png" alt="logo" class="logo-img">
+                devəliSH One Foundation
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="https://www.develishngo.in">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://rzp.io/rzp/K2MpIwc9">Donate Now</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="section" style="padding-bottom: 0;">
+        <div class="container text-center">
+            <h1 class="display-5 fw-bold">Our Volunteers</h1>
+            <p class="lead">Meet the amazing people who make our work possible</p>
+            <div class="mt-3">
+                <a href="https://www.develishngo.in" class="btn-back"><i class="fas fa-arrow-left me-2"></i>Back to Home</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Volunteer Grid -->
+    <section class="section" id="volunteerSection">
+        <div class="container">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by name, email, or ID..." />
+            </div>
+            <div class="row g-4" id="volunteerContainer">
+                <!-- Skeleton loaders will be replaced -->
+            </div>
+            <div id="errorMessage" class="alert alert-warning text-center mt-4" style="display:none;">
+                <i class="fas fa-exclamation-triangle me-2"></i> Unable to load volunteer data. Please try again later.
+            </div>
+            <div id="emptyMessage" class="text-center py-5" style="display:none;">
+                <i class="fas fa-users" style="font-size:3rem;color:#5e7b6e;opacity:0.4;"></i>
+                <h4 class="mt-3 text-muted">No volunteers yet.</h4>
+                <p class="text-muted">Be the first to join our volunteer community!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p><i class="fas fa-registered"></i> devəliSH One Foundation – Section 8 Company (CIN: U88900UP2025NPL220764)</p>
+            <p>&copy; 2026 devəliSH One Foundation. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ==================== CONFIGURATION ====================
+        // 🔁 REPLACE WITH YOUR APPS SCRIPT DEPLOYMENT URL (ends with /exec)
+        const API_URL = 'https://script.google.com/macros/s/AKfycbx38eqpKdRnPzhtnES0uupqclA0rw4RkJppduqO3CwA-mLGCZF8lnhLwrZ7Gb6kuLfEcw/exec';
+        // ======================================================
+
+        let allVolunteers = [];
+
+        function generateSkeletonCards(count = 6) {
+            let html = '';
+            for (let i = 0; i < count; i++) {
+                html += `
+                    <div class="col-lg-4 col-md-6">
+                        <div class="skeleton-card">
+                            <div class="skeleton-photo"></div>
+                            <div class="skeleton-line medium" style="margin-top:8px;"></div>
+                            <div class="skeleton-line short"></div>
+                            <div class="skeleton-line short" style="width:40%;"></div>
+                        </div>
+                    </div>
+                `;
+            }
+            return html;
+        }
+
+        function createVolunteerCard(v) {
+            // Photo handling
+            let photoHtml = '';
+            if (v.photo && v.photo.trim() !== '') {
+                photoHtml = `<img src="${v.photo}" alt="${v.name}" class="volunteer-photo" onerror="this.style.display='none'; this.parentElement.querySelector('.volunteer-photo-fallback').style.display='flex';">`;
+            } else {
+                photoHtml = `<div class="volunteer-photo-fallback"><i class="fas fa-user"></i></div>`;
+            }
+            const fallbackHtml = (v.photo && v.photo.trim() !== '') ? 
+                `<div class="volunteer-photo-fallback" style="display:none;"><i class="fas fa-user"></i></div>` : '';
+
+            // Membership badge
+            let badgeClass = 'free';
+            let badgeText = 'Free Member';
+            if (v.membershipType === 'yearly') { badgeClass = 'yearly'; badgeText = 'Yearly Member'; }
+            else if (v.membershipType === 'lifetime') { badgeClass = 'lifetime'; badgeText = 'Lifetime Member'; }
+
+            return `
+                <div class="col-lg-4 col-md-6">
+                    <div class="volunteer-card">
+                        ${photoHtml}
+                        ${fallbackHtml}
+                        <div class="volunteer-name">${v.name}</div>
+                        <div class="volunteer-id"><i class="fas fa-id-card me-1"></i>${v.volunteerId || 'N/A'}</div>
+                        ${v.email ? `<div class="volunteer-email"><i class="fas fa-envelope"></i> ${v.email}</div>` : ''}
+                        ${v.phone ? `<div class="volunteer-phone"><i class="fas fa-phone"></i> ${v.phone}</div>` : ''}
+                        <div class="membership-badge ${badgeClass}">${badgeText}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderVolunteers(filter = '') {
+            const container = document.getElementById('volunteerContainer');
+            const emptyDiv = document.getElementById('emptyMessage');
+            const filterLower = filter.toLowerCase().trim();
+
+            let filtered = allVolunteers;
+            if (filterLower) {
+                filtered = allVolunteers.filter(v =>
+                    v.name.toLowerCase().includes(filterLower) ||
+                    v.email.toLowerCase().includes(filterLower) ||
+                    (v.volunteerId && v.volunteerId.toLowerCase().includes(filterLower))
+                );
+            }
+
+            if (filtered.length === 0) {
+                if (filterLower) {
+                    container.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-search" style="font-size:3rem;color:#5e7b6e;opacity:0.4;"></i>
+                            <h4 class="mt-3 text-muted">No matching volunteers</h4>
+                            <p class="text-muted">Try a different search term.</p>
+                        </div>
+                    `;
+                    emptyDiv.style.display = 'none';
+                } else {
+                    emptyDiv.style.display = 'block';
+                    container.innerHTML = '';
+                }
+            } else {
+                emptyDiv.style.display = 'none';
+                container.innerHTML = filtered.map(v => createVolunteerCard(v)).join('');
+            }
+        }
+
+        async function loadVolunteers() {
+            const container = document.getElementById('volunteerContainer');
+            const errorDiv = document.getElementById('errorMessage');
+            const emptyDiv = document.getElementById('emptyMessage');
+            
+            container.innerHTML = generateSkeletonCards(6);
+            errorDiv.style.display = 'none';
+            emptyDiv.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_URL}?action=getVolunteers`);
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    allVolunteers = result.data || [];
+                    renderVolunteers();
+                } else {
+                    container.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-exclamation-circle" style="font-size:3rem;color:#f1c40f;"></i>
+                            <h4 class="mt-3">Unable to load volunteers</h4>
+                            <p class="text-muted">${result.message || 'Please try again later.'}</p>
+                        </div>
+                    `;
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-exclamation-circle" style="font-size:3rem;color:#e74c3c;"></i>
+                        <h4 class="mt-3">Network Error</h4>
+                        <p class="text-muted">Could not reach the server. Please check your internet connection.</p>
+                    </div>
+                `;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Search handler
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            renderVolunteers(e.target.value);
+        });
+
+        // Load volunteers on page ready
+        document.addEventListener('DOMContentLoaded', loadVolunteers);
+    </script>
+</body>
+</html>
